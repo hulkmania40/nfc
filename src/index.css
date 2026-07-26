@@ -84,10 +84,12 @@
 
   html {
     @apply scroll-smooth bg-background font-sans antialiased;
+    scrollbar-gutter: stable;
   }
 
   body {
     @apply min-h-svh bg-background text-foreground;
+    overflow-y: scroll;
     background-image:
       radial-gradient(circle at top left, rgb(186 243 255 / 0.5), transparent 32%),
       radial-gradient(circle at top right, rgb(198 246 255 / 0.35), transparent 28%),

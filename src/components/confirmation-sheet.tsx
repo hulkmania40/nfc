@@ -1,4 +1,3 @@
-import { motion } from "framer-motion"
 import { Droplets } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -24,19 +23,8 @@ export function ConfirmationSheet({
   onCancel,
 }: ConfirmationSheetProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/28 px-4 backdrop-blur-2xl"
-    >
-      <motion.div
-        initial={{ y: 48, opacity: 0, scale: 0.95 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 24, opacity: 0, scale: 0.96 }}
-        transition={{ type: "spring", stiffness: 140, damping: 18 }}
-        className="w-full max-w-xl"
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/28 px-4 backdrop-blur-xl">
+      <div className="w-full max-w-xl">
         <GlassCard className="relative overflow-hidden px-8 py-10 text-center">
           <div className="absolute inset-x-0 top-0 h-52 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.18),transparent_62%)]" />
           <div className="relative mx-auto flex size-24 items-center justify-center rounded-full bg-cyan-50/90 shadow-inner shadow-cyan-200/50">
@@ -59,7 +47,7 @@ export function ConfirmationSheet({
             </Button>
           </div>
         </GlassCard>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   )
 }

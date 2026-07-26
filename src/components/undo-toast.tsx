@@ -1,5 +1,4 @@
 import { useEffect } from "react"
-import { AnimatePresence, motion } from "framer-motion"
 import { Undo2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -26,15 +25,9 @@ export function UndoToast() {
   }, [clearUndo, pendingUndo])
 
   return (
-    <AnimatePresence>
-      {pendingUndo !== null ? (
-        <motion.div
-          initial={{ y: 24, opacity: 0, scale: 0.98 }}
-          animate={{ y: 0, opacity: 1, scale: 1 }}
-          exit={{ y: 24, opacity: 0, scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 170, damping: 22 }}
-          className="pointer-events-none fixed bottom-6 left-1/2 z-50 w-[min(92vw,26rem)] -translate-x-1/2"
-        >
+    pendingUndo !== null ? (
+      <div className="pointer-events-none fixed bottom-6 left-1/2 z-50 w-[min(92vw,26rem)] -translate-x-1/2">
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-200">
           <GlassCard className="pointer-events-auto flex items-center justify-between gap-4 p-4">
             <div>
               <p className="text-sm font-semibold text-slate-900">Added {pendingUndo.amount}ml</p>
@@ -45,8 +38,8 @@ export function UndoToast() {
               Undo
             </Button>
           </GlassCard>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
+        </div>
+      </div>
+    ) : null
   )
 }

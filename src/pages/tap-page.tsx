@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { AnimatePresence, motion } from "framer-motion"
 import { Droplets, Sparkles } from "lucide-react"
 
 import { AnimatedCounter } from "@/components/animated-counter"
@@ -64,63 +63,45 @@ function TapFlow({ tagId, tagName, defaultAmount, logs, navigate }: TapFlowProps
 
   return (
     <div className="relative min-h-svh overflow-hidden px-5 py-8 md:px-8">
-      <AnimatePresence mode="wait">
-        {showDoubleTapProtection ? (
-          <ConfirmationSheet
-            key="double-tap"
-            title="You just logged a drink."
-            amountLabel="Try again in a moment"
-            description="This guard prevents accidental NFC re-scans."
-            confirmLabel="Add Another"
-            secondaryLabel="Cancel"
-            onCancel={() => navigate("/dashboard")}
-            onConfirm={() => setAllowOverride(true)}
-          />
-        ) : (
-          <ConfirmationSheet
-            key="tap-confirmation"
-            title="Drink Water?"
-            amountLabel={`${defaultAmount.toLocaleString()} ml`}
-            description={tagName}
-            confirmLabel="Add Water"
-            onCancel={() => navigate("/dashboard")}
-            onConfirm={handleConfirm}
-          />
-        )}
-      </AnimatePresence>
+      {showDoubleTapProtection ? (
+        <ConfirmationSheet
+          title="You just logged a drink."
+          amountLabel="Try again in a moment"
+          description="This guard prevents accidental NFC re-scans."
+          confirmLabel="Add Another"
+          secondaryLabel="Cancel"
+          onCancel={() => navigate("/dashboard")}
+          onConfirm={() => setAllowOverride(true)}
+        />
+      ) : (
+        <ConfirmationSheet
+          title="Drink Water?"
+          amountLabel={`${defaultAmount.toLocaleString()} ml`}
+          description={tagName}
+          confirmLabel="Add Water"
+          onCancel={() => navigate("/dashboard")}
+          onConfirm={handleConfirm}
+        />
+      )}
 
-      <AnimatePresence>
-        {isCelebrating ? (
-          <motion.div
-            key="celebration"
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-slate-950/25 backdrop-blur-sm"
-          >
+      {isCelebrating ? (
+        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-slate-950/25 backdrop-blur-sm">
+          <div className="animate-in fade-in zoom-in-95 duration-200">
             <GlassCard className="relative w-[min(92vw,28rem)] overflow-hidden text-center">
               <div className="absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.25),transparent_60%)]" />
               <div className="relative mx-auto flex size-28 items-end justify-center overflow-hidden rounded-full border border-cyan-100 bg-white/70 shadow-inner shadow-cyan-100/60">
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: "100%" }}
-                  transition={{ duration: 1.2, ease: "easeOut" }}
+                <div
                   className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,#7dd3fc,#0ea5e9)]"
+                  style={{ height: "100%" }}
                 />
-                <motion.div
-                  initial={{ scale: 0.92, opacity: 0.7 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
+                <div
                   className="relative z-10 flex size-16 items-center justify-center rounded-full bg-white/85 text-cyan-600 shadow-lg"
                 >
                   <Droplets className="size-8" />
-                </motion.div>
+                </div>
                 {[0, 1, 2, 3].map((index) => (
-                  <motion.span
+                  <span
                     key={index}
-                    initial={{ opacity: 0, scale: 0.6, y: 0 }}
-                    animate={{ opacity: [0, 1, 0], scale: [0.6, 1, 1.2], y: [-4, -20, -30] }}
-                    transition={{ duration: 1.1, delay: index * 0.08 }}
                     className="absolute size-2 rounded-full bg-cyan-300"
                     style={{ left: `${28 + index * 11}%`, top: `${20 + index * 6}%` }}
                   />
@@ -131,19 +112,15 @@ function TapFlow({ tagId, tagName, defaultAmount, logs, navigate }: TapFlowProps
                 <AnimatedCounter value={celebrationAmount} className="text-5xl font-semibold tracking-tight text-slate-900" suffix=" ml" />
                 <p className="text-sm text-slate-500">Returning to dashboard...</p>
               </div>
-              <motion.div
-                animate={{ scaleX: [0, 1] }}
-                transition={{ duration: 1.4, ease: "easeOut" }}
-                className="mt-6 h-1 origin-left rounded-full bg-cyan-400"
-              />
+              <div className="mt-6 h-1 rounded-full bg-cyan-400 opacity-80" />
               <div className="mt-5 flex items-center justify-center gap-2 text-xs font-medium uppercase tracking-[0.28em] text-slate-400">
                 <Sparkles className="size-4" />
                 Ripple complete
               </div>
             </GlassCard>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

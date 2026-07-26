@@ -78,10 +78,10 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto min-h-svh w-full max-w-7xl px-5 pb-12 pt-2 md:px-8">
+    <div className="min-h-svh pb-12 pt-2">
       <Navbar />
 
-      <div className="mt-6 space-y-6">
+      <div className="mx-auto mt-6 w-full max-w-7xl space-y-6 px-5 md:px-8">
         <section className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
           <GlassCard className="overflow-hidden p-0">
             <div className="grid gap-6 p-6 md:p-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">

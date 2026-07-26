@@ -3,13 +3,11 @@ import { ArrowRight, Droplets, Sparkles } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/glass-card"
-import { Navbar } from "@/components/navbar"
 import { WaterBlob } from "@/components/water-blob"
 
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden">
-      <Navbar />
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 pb-20 pt-8 md:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:pb-24 lg:pt-14">
         <div className="relative z-10 max-w-2xl space-y-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-white/70 px-4 py-2 text-sm font-medium text-cyan-700 shadow-sm backdrop-blur-md">
