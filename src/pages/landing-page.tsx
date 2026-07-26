@@ -53,7 +53,7 @@ export function LandingPage() {
             </div>
             <div className="grid gap-4">
               <div className="flex items-center justify-center rounded-[2rem] bg-white/70 py-6">
-                <ProgressRing value={72} size={180} label="Hydration" />
+                <ProgressRing value={72} size={180} label="Hydration" className="max-w-[10rem]" />
               </div>
               <WeeklyChart
                 goal={2500}

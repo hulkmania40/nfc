@@ -7,6 +7,7 @@ type ProgressRingProps = {
   trackClassName?: string
   progressClassName?: string
   label?: string
+  className?: string
 }
 
 export function ProgressRing({
@@ -16,6 +17,7 @@ export function ProgressRing({
   trackClassName,
   progressClassName,
   label,
+  className,
 }: ProgressRingProps) {
   const normalized = Math.max(0, Math.min(100, value))
   const radius = (size - strokeWidth) / 2
@@ -24,8 +26,11 @@ export function ProgressRing({
   const center = size / 2
 
   return (
-    <div className="relative inline-flex items-center justify-center">
-      <svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
+    <div
+      className={cn("relative inline-flex w-full items-center justify-center", className)}
+      style={{ maxWidth: `${size}px`, aspectRatio: "1 / 1" }}
+    >
+      <svg className="size-full" viewBox={`0 0 ${size} ${size}`}>
         <circle
           className={cn("fill-none stroke-white/55", trackClassName)}
           cx={center}
@@ -45,7 +50,7 @@ export function ProgressRing({
           transform={`rotate(-90 ${center} ${center})`}
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
         {label ? <div className="text-xs font-medium uppercase tracking-[0.32em] text-slate-500">{label}</div> : null}
       </div>
     </div>

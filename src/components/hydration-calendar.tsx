@@ -42,7 +42,7 @@ export function HydrationCalendar({ logs, tags, goal }: HydrationCalendarProps) 
           </div>
         </div>
         <div className="mt-6 grid grid-cols-7 gap-2">
-          {days.map((day, index) => {
+          {days.map((day) => {
             const intensity =
               day.percentage >= 100
                 ? "bg-cyan-500 text-white"

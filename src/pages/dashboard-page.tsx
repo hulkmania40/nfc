@@ -106,11 +106,18 @@ export function DashboardPage() {
               </div>
 
               <div className="relative flex items-center justify-center">
-                <div className="relative flex items-center justify-center rounded-[2.5rem] bg-white/55 p-4 shadow-inner shadow-cyan-100/60">
-                  <ProgressRing value={hydrationLevel} label="Daily progress" size={240} />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <AnimatedCounter value={todayIntake} className="text-4xl font-semibold tracking-tight text-slate-900" suffix=" ml" />
-                    <p className="mt-2 text-sm text-slate-500">of {settings.dailyGoal.toLocaleString()} ml</p>
+                <div className="relative flex w-full max-w-[13rem] items-center justify-center rounded-[2.5rem] bg-white/55 p-3 shadow-inner shadow-cyan-100/60 sm:max-w-[15rem] sm:p-4">
+                  <ProgressRing value={hydrationLevel} size={240} className="max-w-[11.5rem] sm:max-w-[13rem]" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-slate-500 sm:text-xs sm:tracking-[0.32em]">
+                      Daily progress
+                    </p>
+                    <AnimatedCounter
+                      value={todayIntake}
+                      className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl"
+                      suffix=" ml"
+                    />
+                    <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">of {settings.dailyGoal.toLocaleString()} ml</p>
                   </div>
                 </div>
               </div>

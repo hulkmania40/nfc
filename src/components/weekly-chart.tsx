@@ -25,7 +25,7 @@ export function WeeklyChart({ series, goal }: WeeklyChartProps) {
         <p className="text-sm text-slate-500">Daily goal {goal.toLocaleString()} ml</p>
       </div>
       <div className="mt-8 flex items-end gap-3">
-        {series.map((item, index) => {
+        {series.map((item) => {
           const height = Math.max(12, (item.total / maxTotal) * 180)
           const reachedGoal = item.total >= goal
           return (
