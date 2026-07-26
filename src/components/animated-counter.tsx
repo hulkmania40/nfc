@@ -16,21 +16,31 @@ export function AnimatedCounter({
   className,
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(value)
+  const previousValue = useRef(value)
   const frame = useRef<number | null>(null)
 
   useEffect(() => {
+    if (frame.current !== null) {
+      window.cancelAnimationFrame(frame.current)
+    }
+
     const start = performance.now()
-    const initial = displayValue
+    const initial = previousValue.current
 
     const animate = (timestamp: number) => {
       const elapsed = timestamp - start
       const progress = Math.min(1, elapsed / duration)
       const eased = 1 - (1 - progress) ** 3
-      setDisplayValue(Math.round(initial + (value - initial) * eased))
+      const nextValue = Math.round(initial + (value - initial) * eased)
+      setDisplayValue(nextValue)
 
       if (progress < 1) {
         frame.current = window.requestAnimationFrame(animate)
+        return
       }
+
+      previousValue.current = value
+      frame.current = null
     }
 
     frame.current = window.requestAnimationFrame(animate)
@@ -40,7 +50,7 @@ export function AnimatedCounter({
         window.cancelAnimationFrame(frame.current)
       }
     }
-  }, [duration, value, displayValue])
+  }, [duration, value])
 
   return (
     <span className={className}>

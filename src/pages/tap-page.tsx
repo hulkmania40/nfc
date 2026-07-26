@@ -108,8 +108,9 @@ function TapFlow({ tagId, tagName, defaultAmount, logs, navigate }: TapFlowProps
                   className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,#7dd3fc,#0ea5e9)]"
                 />
                 <motion.div
-                  animate={{ scale: [1, 1.12, 1], opacity: [0.8, 1, 0.8] }}
-                  transition={{ duration: 1.2, repeat: Number.POSITIVE_INFINITY }}
+                  initial={{ scale: 0.92, opacity: 0.7 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
                   className="relative z-10 flex size-16 items-center justify-center rounded-full bg-white/85 text-cyan-600 shadow-lg"
                 >
                   <Droplets className="size-8" />

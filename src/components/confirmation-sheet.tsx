@@ -40,13 +40,9 @@ export function ConfirmationSheet({
         <GlassCard className="relative overflow-hidden px-8 py-10 text-center">
           <div className="absolute inset-x-0 top-0 h-52 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.18),transparent_62%)]" />
           <div className="relative mx-auto flex size-24 items-center justify-center rounded-full bg-cyan-50/90 shadow-inner shadow-cyan-200/50">
-            <motion.div
-              animate={{ y: [0, -8, 0], scale: [1, 1.04, 1] }}
-              transition={{ duration: 4.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-              className="flex size-16 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_25%,#dffbfd,#38bdf8_72%,#0ea5e9)] text-white shadow-[0_20px_50px_rgba(14,165,233,0.3)]"
-            >
+            <div className="flex size-16 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_25%,#dffbfd,#38bdf8_72%,#0ea5e9)] text-white shadow-[0_20px_50px_rgba(14,165,233,0.3)]">
               <Droplets className="size-8" />
-            </motion.div>
+            </div>
           </div>
           <div className="relative mt-8 space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.36em] text-cyan-500">Hydration check</p>

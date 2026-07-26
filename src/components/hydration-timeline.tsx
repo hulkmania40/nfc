@@ -1,6 +1,4 @@
 import { format, parseISO } from "date-fns"
-import { motion } from "framer-motion"
-
 import { GlassCard } from "@/components/glass-card"
 import type { TimelineEntry } from "@/types/hydration"
 import { formatMilliliters } from "@/utils/hydration"
@@ -22,12 +20,9 @@ export function HydrationTimeline({ entries }: HydrationTimelineProps) {
         {entries.length === 0 ? (
           <p className="text-sm text-slate-500">No drinks recorded for this day yet.</p>
         ) : null}
-        {entries.map((entry, index) => (
-          <motion.div
+        {entries.map((entry) => (
+          <div
             key={entry.id}
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.06 }}
             className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/65 px-4 py-3"
           >
             <div>
@@ -35,7 +30,7 @@ export function HydrationTimeline({ entries }: HydrationTimelineProps) {
               <p className="text-xs text-slate-500">{entry.tagName}</p>
             </div>
             <p className="text-sm font-semibold text-cyan-600">{formatMilliliters(entry.amount)}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </GlassCard>

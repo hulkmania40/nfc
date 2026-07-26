@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react"
 import { addMonths, format, isSameDay, subMonths } from "date-fns"
-import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -56,16 +55,11 @@ export function HydrationCalendar({ logs, tags, goal }: HydrationCalendarProps) 
                       : "bg-white/80 text-slate-400"
 
             return (
-              <motion.button
+              <button
                 key={day.key}
                 type="button"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.01 }}
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedDate(day.date)}
-                className={`aspect-square rounded-2xl border border-white/70 text-left text-sm font-medium transition ${intensity} ${
+                className={`aspect-square rounded-2xl border border-white/70 text-left text-sm font-medium transition-transform hover:-translate-y-0.5 ${intensity} ${
                   day.inMonth ? "shadow-sm" : "opacity-45"
                 } ${isSameDay(day.date, selectedDate) ? "ring-2 ring-cyan-400 ring-offset-2 ring-offset-white" : ""}`}
               >
@@ -73,7 +67,7 @@ export function HydrationCalendar({ logs, tags, goal }: HydrationCalendarProps) 
                   <span>{format(day.date, "d")}</span>
                   <span className="text-[11px] font-semibold uppercase tracking-[0.2em]">{day.percentage}%</span>
                 </span>
-              </motion.button>
+              </button>
             )
           })}
         </div>

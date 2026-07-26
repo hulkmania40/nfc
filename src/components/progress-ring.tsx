@@ -1,5 +1,3 @@
-import { motion } from "framer-motion"
-
 import { cn } from "@/lib/utils"
 
 type ProgressRingProps = {
@@ -34,7 +32,7 @@ export function ProgressRing({
           r={radius}
           strokeWidth={strokeWidth}
         />
-        <motion.circle
+        <circle
           className={cn("fill-none stroke-cyan-400", progressClassName)}
           cx={size / 2}
           cy={size / 2}
@@ -42,9 +40,7 @@ export function ProgressRing({
           strokeLinecap="round"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset: dashOffset }}
-          transition={{ type: "spring", stiffness: 120, damping: 18 }}
+          strokeDashoffset={dashOffset}
           style={{ rotate: -90, transformOrigin: "50% 50%" }}
         />
       </svg>

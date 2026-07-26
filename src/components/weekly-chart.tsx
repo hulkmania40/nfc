@@ -1,5 +1,3 @@
-import { motion } from "framer-motion"
-
 import { GlassCard } from "@/components/glass-card"
 
 type WeeklySeriesItem = {
@@ -33,15 +31,13 @@ export function WeeklyChart({ series, goal }: WeeklyChartProps) {
           return (
             <div key={item.key} className="flex flex-1 flex-col items-center gap-3">
               <div className="flex h-48 w-full items-end justify-center rounded-3xl bg-white/55 px-2 py-3">
-                <motion.div
-                  initial={{ height: 0, opacity: 0.4 }}
-                  animate={{ height, opacity: 1 }}
-                  transition={{ delay: index * 0.06, type: "spring", stiffness: 120, damping: 18 }}
+                <div
                   className={`w-full max-w-12 rounded-[1.2rem] ${
                     reachedGoal
                       ? "bg-[linear-gradient(180deg,#0ea5e9,#22d3ee)]"
                       : "bg-[linear-gradient(180deg,#bfdbfe,#7dd3fc)]"
                   }`}
+                  style={{ height }}
                 />
               </div>
               <div className="text-center">

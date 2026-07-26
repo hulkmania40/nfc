@@ -1,9 +1,8 @@
-import type { HTMLMotionProps } from "framer-motion"
-import { motion } from "framer-motion"
+import type { HTMLAttributes } from "react"
 
 import { cn } from "@/lib/utils"
 
-type GlassCardProps = HTMLMotionProps<"div"> & {
+type GlassCardProps = HTMLAttributes<HTMLDivElement> & {
   tone?: "default" | "soft" | "accent"
 }
 
@@ -15,7 +14,7 @@ const toneClasses = {
 
 export function GlassCard({ className, tone = "default", ...props }: GlassCardProps) {
   return (
-    <motion.div
+    <div
       className={cn("glass-panel rounded-[2rem] p-6 text-slate-900", toneClasses[tone], className)}
       {...props}
     />
