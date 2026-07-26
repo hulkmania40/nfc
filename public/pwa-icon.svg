@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hydraBg" x1="88" y1="80" x2="424" y2="432" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DFFBFD" />
+      <stop offset="0.55" stop-color="#22D3EE" />
+      <stop offset="1" stop-color="#0EA5E9" />
+    </linearGradient>
+    <linearGradient id="hydraGlass" x1="188" y1="140" x2="324" y2="374" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity="0.95" />
+      <stop offset="1" stop-color="white" stop-opacity="0.15" />
+    </linearGradient>
+  </defs>
+  <rect x="24" y="24" width="464" height="464" rx="124" fill="url(#hydraBg)" />
+  <path d="M155 188C155 161.49 176.49 140 203 140H309C335.51 140 357 161.49 357 188V296C357 339.63 323.63 374 280 374H232C188.37 374 155 339.63 155 296V188Z" fill="url(#hydraGlass)"/>
+  <path d="M177 200C177 184.536 189.536 172 205 172H307C322.464 172 335 184.536 335 200V294C335 325.823 309.823 352 278 352H234C202.177 352 177 325.823 177 294V200Z" fill="rgba(255,255,255,0.34)"/>
+  <path d="M222 124C222 110.745 232.745 100 246 100H266C279.255 100 290 110.745 290 124V145H222V124Z" fill="white" fill-opacity="0.72"/>
+  <path d="M239 225C239 216.163 246.163 209 255 209C263.837 209 271 216.163 271 225V322C271 330.837 263.837 338 255 338C246.163 338 239 330.837 239 322V225Z" fill="white" fill-opacity="0.82"/>
+  <circle cx="378" cy="162" r="20" fill="white" fill-opacity="0.65"/>
+  <circle cx="132" cy="306" r="14" fill="white" fill-opacity="0.45"/>
+</svg>
