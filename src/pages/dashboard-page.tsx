@@ -1,6 +1,15 @@
 import { useMemo, type ComponentType } from "react"
 import { Link } from "react-router-dom"
-import { CalendarDays, Clock3, Flame, Goal, RefreshCw, Sparkles } from "lucide-react"
+import {
+  CalendarDays,
+  Clock3,
+  Flame,
+  Goal,
+  RefreshCw,
+  Sparkles,
+  Droplets,
+  TrendingUp,
+} from "lucide-react"
 import { format } from "date-fns"
 
 import { AnimatedCounter } from "@/components/animated-counter"
@@ -28,29 +37,40 @@ import {
   getWeeklySeries,
 } from "@/utils/hydration"
 
+// Simplified Metric Card - Less visual weight
 function MetricCard({
   icon: Icon,
   label,
   value,
-  tone = "default",
+  trend,
 }: {
   icon: ComponentType<{ className?: string }>
   label: string
   value: string
-  tone?: "default" | "accent"
+  trend?: { value: number; label: string }
 }) {
   return (
-    <GlassCard tone={tone === "accent" ? "accent" : "soft"} className="p-4">
-      <div className="flex items-start gap-3">
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/70 text-cyan-600">
-          <Icon className="size-5" />
+    <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
+      <div className="flex items-start gap-2 sm:gap-3">
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 sm:size-10">
+          <Icon className="size-3.5 sm:size-4" />
         </div>
-        <div>
-          <p className="text-sm text-slate-500">{label}</p>
-          <p className="mt-1 text-lg font-semibold text-slate-900">{value}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-medium text-slate-500 sm:text-xs">
+            {label}
+          </p>
+          <p className="mt-0.5 text-base font-semibold text-slate-900 sm:text-lg">
+            {value}
+          </p>
+          {trend && (
+            <p className="mt-0.5 text-[10px] text-slate-400 sm:text-xs">
+              {trend.value > 0 ? "+" : ""}
+              {trend.value}% {trend.label}
+            </p>
+          )}
         </div>
       </div>
-    </GlassCard>
+    </div>
   )
 }
 
@@ -63,139 +83,288 @@ export function DashboardPage() {
   const weeklySeries = useMemo(() => getWeeklySeries(logs), [logs])
   const monthlyTotals = useMemo(() => getMonthlyTotals(logs), [logs])
   const averageIntake = useMemo(() => getAverageIntake(logs), [logs])
-  const currentStreak = useMemo(() => getCurrentStreak(logs, settings.dailyGoal), [logs, settings.dailyGoal])
-  const longestStreak = useMemo(() => getLongestStreak(logs, settings.dailyGoal), [logs, settings.dailyGoal])
+  const currentStreak = useMemo(
+    () => getCurrentStreak(logs, settings.dailyGoal),
+    [logs, settings.dailyGoal]
+  )
+  const longestStreak = useMemo(
+    () => getLongestStreak(logs, settings.dailyGoal),
+    [logs, settings.dailyGoal]
+  )
   const completion = getGoalCompletion(todayIntake, settings.dailyGoal)
   const hydrationLevel = getHydrationLevel(todayIntake, settings.dailyGoal)
   const lastDrink = getLastDrink(logs)
+
   const recentLogs = useMemo(
-    () => [...logs].sort((left, right) => right.timestamp.localeCompare(left.timestamp)).slice(0, 4),
+    () =>
+      [...logs]
+        .sort((left, right) => right.timestamp.localeCompare(left.timestamp))
+        .slice(0, 4),
     [logs]
   )
+
+  const todayGlasses = useMemo(
+    () =>
+      logs.filter(
+        (log) =>
+          format(new Date(log.timestamp), "yyyy-MM-dd") ===
+          format(new Date(), "yyyy-MM-dd")
+      ),
+    [logs]
+  )
+
+  // Get time-based greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return "Good morning"
+    if (hour < 17) return "Good afternoon"
+    return "Good evening"
+  }
 
   if (tags.length === 0) {
     return <TagOnboarding />
   }
 
   return (
-    <div className="min-h-svh pb-12 pt-2">
+    <div className="min-h-svh pt-2 pb-8">
       <Navbar />
 
-      <div className="mx-auto mt-6 w-full max-w-7xl space-y-6 px-5 md:px-8">
-        <section className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-          <GlassCard className="overflow-hidden p-0">
-            <div className="grid gap-6 p-6 md:p-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-              <div className="space-y-5">
-                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-white/70 px-4 py-2 text-sm font-medium text-cyan-700 shadow-sm backdrop-blur-md">
-                  <Sparkles className="size-4" />
-                  Stay Hydrated 💧
+      <div className="mx-auto mt-4 w-full max-w-7xl space-y-4 px-4 sm:mt-6 sm:space-y-6 sm:px-5 md:px-8">
+        {/* Main Dashboard Card - Mobile Optimized */}
+        <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <GlassCard className="overflow-hidden p-4 sm:p-6 md:p-8">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center">
+              {/* Left Content - Mobile First */}
+              <div className="flex-1 space-y-3 sm:space-y-4">
+                {/* Greeting Badge - Mobile Optimized */}
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-cyan-50 px-3 py-1.5 text-xs font-medium text-cyan-700 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
+                  <Sparkles className="size-3 sm:size-3.5" />
+                  <span className="whitespace-nowrap">{getGreeting()}! 👋</span>
                 </div>
+
+                {/* Progress Message - Responsive */}
                 <div>
-                  <h1 className="text-4xl font-semibold tracking-tight text-slate-900 md:text-5xl">Stay Hydrated.</h1>
-                  <p className="mt-3 max-w-xl text-base leading-7 text-slate-600">
-                    Your day at a glance, with calm motion, clear progress, and local-first persistence.
+                  <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl md:text-3xl lg:text-4xl">
+                    {completion >= 80
+                      ? "You're crushing it! 💪"
+                      : completion >= 50
+                        ? "Keep the momentum going! 🚀"
+                        : "Let's start hydrating! 💧"}
+                  </h1>
+                  <p className="mt-1 text-sm leading-5 text-slate-500 sm:mt-2 sm:text-base sm:leading-6">
+                    {completion >= 80
+                      ? "Amazing progress today! You're well on your way."
+                      : completion >= 50
+                        ? "You're halfway to your goal. Stay consistent!"
+                        : "Every drop counts. Let's reach your daily goal together."}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  {tags.map((tag) => (
-                    <Button asChild key={tag.id} variant="secondary" className="rounded-full px-4">
-                      <Link to={`/tap/${tag.id}`}>{tag.name}</Link>
+
+                {/* Quick Action Buttons - Horizontal scroll on mobile */}
+                <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
+                  {tags.slice(0, 3).map((tag) => (
+                    <Button
+                      asChild
+                      key={tag.id}
+                      variant="outline"
+                      size="sm"
+                      className="shrink-0 rounded-full border-slate-200 text-xs sm:text-sm"
+                    >
+                      <Link to={`/tap/${tag.id}`}>
+                        <Droplets className="mr-1 size-3 sm:mr-1.5 sm:size-3.5" />
+                        <span className="whitespace-nowrap">{tag.name}</span>
+                      </Link>
                     </Button>
                   ))}
+                  {tags.length > 3 && (
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="shrink-0 rounded-full text-xs sm:text-sm"
+                    >
+                      <Link to="/tags">
+                        <span className="whitespace-nowrap">
+                          +{tags.length - 3} more
+                        </span>
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </div>
 
-              <div className="relative flex items-center justify-center">
-                <div className="relative flex w-full max-w-[13rem] items-center justify-center rounded-[2.5rem] bg-white/55 p-3 shadow-inner shadow-cyan-100/60 sm:max-w-[15rem] sm:p-4">
-                  <ProgressRing value={hydrationLevel} size={240} className="max-w-[11.5rem] sm:max-w-[13rem]" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-                    <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-slate-500 sm:text-xs sm:tracking-[0.32em]">
-                      Daily progress
+              {/* Progress Ring - Clean, no duplicate progress bar */}
+              <div className="flex justify-center md:justify-end">
+                <div className="relative flex w-full max-w-44 items-center justify-center rounded-2xl bg-slate-50/50 p-3 sm:max-w-52 sm:p-4">
+                  <ProgressRing
+                    value={hydrationLevel}
+                    size={180}
+                    className="max-w-36 sm:max-w-44 md:max-w-48"
+                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center sm:px-6">
+                    <p className="text-[8px] font-medium tracking-[0.2em] text-slate-400 uppercase sm:text-[10px]">
+                      Today
                     </p>
                     <AnimatedCounter
                       value={todayIntake}
-                      className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl"
+                      className="mt-0.5 text-xl font-semibold tracking-tight text-slate-900 sm:mt-1 sm:text-2xl md:text-3xl"
                       suffix=" ml"
                     />
-                    <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">of {settings.dailyGoal.toLocaleString()} ml</p>
+                    <p className="mt-0.5 text-[10px] text-slate-400 sm:text-xs">
+                      of {settings.dailyGoal.toLocaleString()} ml
+                    </p>
+                    {/* Removed the duplicate progress bar */}
                   </div>
                 </div>
               </div>
             </div>
           </GlassCard>
 
-          <div className="grid gap-6">
-            <GlassCard className="space-y-5 p-6">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-500">Today's stats</p>
-                  <h2 className="mt-1 text-2xl font-semibold text-slate-900">Small numbers, strong habits</h2>
-                </div>
+          {/* Stats Grid - Simplified with better mobile spacing */}
+          <div className="grid gap-3 sm:gap-4">
+            <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[10px] font-medium tracking-wider text-slate-500 uppercase sm:text-xs">
+                  Today's stats
+                </p>
+                <span className="text-[10px] text-slate-400 sm:text-xs">
+                  {completion}% complete
+                </span>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <MetricCard icon={Goal} label="Goal completion" value={`${completion}%`} tone="accent" />
-                <MetricCard icon={Flame} label="Current streak" value={`${currentStreak} days`} />
-                <MetricCard icon={CalendarDays} label="Glasses today" value={`${logs.filter((log) => format(new Date(log.timestamp), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")).length}`} />
-                <MetricCard icon={Clock3} label="Last drink" value={lastDrink ? format(new Date(lastDrink.timestamp), "h:mm a") : "No logs yet"} />
+              <div className="mt-2 grid grid-cols-2 gap-1.5 sm:mt-3 sm:gap-2">
+                <MetricCard
+                  icon={Goal}
+                  label="Progress"
+                  value={`${completion}%`}
+                  trend={{ value: completion - 50, label: "vs goal" }}
+                />
+                <MetricCard
+                  icon={Flame}
+                  label="Streak"
+                  value={`${currentStreak}d`}
+                />
+                <MetricCard
+                  icon={Droplets}
+                  label="Glasses"
+                  value={`${todayGlasses.length}`}
+                />
+                <MetricCard
+                  icon={Clock3}
+                  label="Last"
+                  value={
+                    lastDrink
+                      ? format(new Date(lastDrink.timestamp), "h:mm a")
+                      : "—"
+                  }
+                />
               </div>
-            </GlassCard>
+            </div>
 
-            <GlassCard className="space-y-5 p-6">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-500">Quick insights</p>
-                  <h2 className="mt-1 text-2xl font-semibold text-slate-900">Long-term rhythm</h2>
-                </div>
-                <Button variant="secondary" size="sm" className="rounded-full">
-                  <RefreshCw className="size-4" />
-                  Sync local data
+            <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[10px] font-medium tracking-wider text-slate-500 uppercase sm:text-xs">
+                  Insights
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 text-[10px] sm:h-7 sm:text-xs"
+                >
+                  <RefreshCw className="mr-1 size-2.5 sm:size-3" />
+                  <span className="hidden sm:inline">Sync</span>
                 </Button>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <MetricCard icon={Sparkles} label="Average intake" value={formatMilliliters(averageIntake)} />
-                <MetricCard icon={Flame} label="Longest streak" value={`${longestStreak} days`} />
-                <MetricCard icon={Goal} label="Monthly total" value={formatMilliliters(monthlyTotals.total)} />
+              <div className="mt-2 grid grid-cols-3 gap-1.5 sm:mt-3 sm:gap-2">
+                <div className="rounded-lg bg-slate-50/50 p-2 text-center sm:p-3">
+                  <p className="text-[9px] text-slate-400 sm:text-xs">Avg</p>
+                  <p className="text-xs font-semibold text-slate-900 sm:text-sm">
+                    {formatMilliliters(averageIntake)}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-slate-50/50 p-2 text-center sm:p-3">
+                  <p className="text-[9px] text-slate-400 sm:text-xs">Best</p>
+                  <p className="text-xs font-semibold text-slate-900 sm:text-sm">
+                    {longestStreak}d
+                  </p>
+                </div>
+                <div className="rounded-lg bg-slate-50/50 p-2 text-center sm:p-3">
+                  <p className="text-[9px] text-slate-400 sm:text-xs">
+                    Monthly
+                  </p>
+                  <p className="text-xs font-semibold text-slate-900 sm:text-sm">
+                    {formatMilliliters(monthlyTotals.total)}
+                  </p>
+                </div>
               </div>
-            </GlassCard>
+            </div>
           </div>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        {/* Chart and Recent Logs */}
+        <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <WeeklyChart series={weeklySeries} goal={settings.dailyGoal} />
-          <GlassCard className="space-y-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-500">Recent drinks</p>
-              <h3 className="mt-1 text-xl font-semibold text-slate-900">Latest hydration events</h3>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <p className="text-[10px] font-medium tracking-wider text-slate-500 uppercase sm:text-xs">
+                  Recent logs
+                </p>
+                <h3 className="mt-0.5 text-sm font-medium text-slate-900">
+                  Latest drinks
+                </h3>
+              </div>
+              {recentLogs.length > 0 && (
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="text-[10px] sm:text-xs"
+                >
+                  <Link to="/history">View all</Link>
+                </Button>
+              )}
             </div>
+
             {recentLogs.length === 0 ? (
               <EmptyState
                 title="No drinks yet"
-                description="Tap a glass to see your first hydration log appear here."
+                description="Tap a glass to start tracking your hydration."
                 action={
-                  <Button asChild className="rounded-full px-5">
-                    <Link to={`/tap/${tags[0]?.id ?? ""}`}>Open tap flow</Link>
+                  <Button asChild size="sm" className="rounded-full">
+                    <Link to={`/tap/${tags[0]?.id ?? ""}`}>Start tracking</Link>
                   </Button>
                 }
               />
             ) : (
-              <div className="space-y-3">
+              <div className="mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">
                 {recentLogs.map((log) => {
                   const tag = tags.find((item) => item.id === log.tagId)
                   return (
-                    <div key={log.id} className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/65 px-4 py-3">
-                      <div>
-                        <p className="font-medium text-slate-900">{tag?.name ?? "NFC tap"}</p>
-                        <p className="text-sm text-slate-500">{format(new Date(log.timestamp), "h:mm a · MMM d")}</p>
+                    <div
+                      key={log.id}
+                      className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50/50 px-2.5 py-2 sm:px-3 sm:py-2.5"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium text-slate-900 sm:text-sm">
+                          {tag?.name ?? "NFC tap"}
+                        </p>
+                        <p className="text-[10px] text-slate-400 sm:text-xs">
+                          {format(new Date(log.timestamp), "h:mm a · MMM d")}
+                        </p>
                       </div>
-                      <p className="text-sm font-semibold text-cyan-600">{formatMilliliters(log.amount)}</p>
+                      <p className="text-xs font-semibold text-cyan-600 sm:text-sm">
+                        {formatMilliliters(log.amount)}
+                      </p>
                     </div>
                   )
                 })}
               </div>
             )}
-          </GlassCard>
+          </div>
         </section>
 
+        {/* Calendar - Simplified */}
         <HydrationCalendar logs={logs} tags={tags} goal={settings.dailyGoal} />
       </div>
     </div>

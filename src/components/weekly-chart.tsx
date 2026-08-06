@@ -14,35 +14,63 @@ type WeeklyChartProps = {
 
 export function WeeklyChart({ series, goal }: WeeklyChartProps) {
   const maxTotal = Math.max(goal, ...series.map((item) => item.total), 1)
+  const chartHeight = 160 // Base height in pixels
 
   return (
-    <GlassCard>
-      <div className="flex items-center justify-between gap-4">
+    <GlassCard className="p-4 sm:p-5 md:p-6">
+      {/* Header - Responsive */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-500">Weekly chart</p>
-          <h3 className="mt-1 text-xl font-semibold text-slate-900">7-day hydration</h3>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-600 sm:text-sm">
+            Weekly chart
+          </p>
+          <h3 className="mt-0.5 text-lg font-medium text-slate-900 sm:text-xl">
+            7-day hydration
+          </h3>
         </div>
-        <p className="text-sm text-slate-500">Daily goal {goal.toLocaleString()} ml</p>
+        <p className="text-xs text-slate-500 sm:text-sm">
+          Daily goal {goal.toLocaleString()} ml
+        </p>
       </div>
-      <div className="mt-8 flex items-end gap-3">
+
+      {/* Chart - Fixed height calculation */}
+      <div className="mt-6 flex items-end gap-1.5 sm:gap-2 md:gap-3">
         {series.map((item) => {
-          const height = Math.max(12, (item.total / maxTotal) * 180)
+          // Calculate height as percentage of max, with minimum 8px
+          const heightPercentage = (item.total / maxTotal) * 100
+          const height = Math.max(8, (heightPercentage / 100) * chartHeight)
           const reachedGoal = item.total >= goal
+          
           return (
-            <div key={item.key} className="flex flex-1 flex-col items-center gap-3">
-              <div className="flex h-48 w-full items-end justify-center rounded-3xl bg-white/55 px-2 py-3">
+            <div key={item.key} className="flex flex-1 flex-col items-center gap-2 sm:gap-3">
+              {/* Bar container with fixed height */}
+              <div 
+                className="relative flex w-full items-end justify-center rounded-xl bg-slate-50/80 px-1 py-2 sm:rounded-2xl sm:px-2 sm:py-3"
+                style={{ height: chartHeight + 16 }} // +16 for padding
+              >
+                {/* Bar with rounded top */}
                 <div
-                  className={`w-full max-w-12 rounded-[1.2rem] ${
+                  className={`w-full max-w-12 rounded-t-lg ${
                     reachedGoal
-                      ? "bg-[linear-gradient(180deg,#0ea5e9,#22d3ee)]"
-                      : "bg-[linear-gradient(180deg,#bfdbfe,#7dd3fc)]"
-                  }`}
-                  style={{ height }}
+                      ? "bg-linear-to-t from-cyan-500 to-cyan-300"
+                      : "bg-linear-to-t from-slate-300 to-slate-200"
+                  } transition-all duration-300`}
+                  style={{ 
+                    height: Math.max(4, height),
+                    minHeight: 4,
+                    borderRadius: height > 8 ? '8px 8px 0 0' : '4px'
+                  }}
                 />
               </div>
+              
+              {/* Labels - Responsive text */}
               <div className="text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{item.label}</p>
-                <p className="mt-1 text-sm font-medium text-slate-900">{item.total.toLocaleString()} ml</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 sm:text-xs">
+                  {item.label}
+                </p>
+                <p className="mt-0.5 text-[10px] font-medium text-slate-700 sm:mt-1 sm:text-xs">
+                  {item.total.toLocaleString()}
+                </p>
               </div>
             </div>
           )
