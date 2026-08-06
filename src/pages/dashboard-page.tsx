@@ -1,14 +1,12 @@
 import { useMemo, type ComponentType } from "react"
 import { Link } from "react-router-dom"
 import {
-  CalendarDays,
   Clock3,
   Flame,
   Goal,
   RefreshCw,
   Sparkles,
   Droplets,
-  TrendingUp,
 } from "lucide-react"
 import { format } from "date-fns"
 
