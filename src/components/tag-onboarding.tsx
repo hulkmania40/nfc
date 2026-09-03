@@ -18,14 +18,15 @@ function getTagUrl(tagId: string) {
 export function TagOnboarding() {
   const addTag = useTagStore((state) => state.addTag)
   const tags = useTagStore((state) => state.tags)
-  
+
   const [name, setName] = useState("")
   const [defaultAmount, setDefaultAmount] = useState(250)
+  const [amountDraft, setAmountDraft] = useState("250")
   const [createdUrl, setCreatedUrl] = useState<string | null>(null)
   const [isCopied, setIsCopied] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [errors, setErrors] = useState<{ name?: string; amount?: string }>({})
-  
+
   const nameInputRef = useRef<HTMLInputElement>(null)
   const urlInputRef = useRef<HTMLInputElement>(null)
 
@@ -44,7 +45,7 @@ export function TagOnboarding() {
 
   const validateForm = (): boolean => {
     const newErrors: { name?: string; amount?: string } = {}
-    
+
     // Validate name
     const trimmedName = name.trim()
     if (!trimmedName) {
@@ -56,7 +57,7 @@ export function TagOnboarding() {
     } else if (tags.some(tag => tag.name.toLowerCase() === trimmedName.toLowerCase())) {
       newErrors.name = "A tag with this name already exists"
     }
-    
+
     // Validate amount
     if (defaultAmount < 50) {
       newErrors.amount = "Minimum amount is 50ml"
@@ -65,14 +66,14 @@ export function TagOnboarding() {
     } else if (defaultAmount % 25 !== 0) {
       newErrors.amount = "Amount must be in multiples of 25ml"
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
   const handleCreate = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    
+
     if (!validateForm()) {
       // Focus first field with error
       if (errors.name) {
@@ -82,18 +83,19 @@ export function TagOnboarding() {
     }
 
     setIsCreating(true)
-    
+
     try {
       const trimmedName = name.trim()
       const tag = addTag({ name: trimmedName, defaultAmount })
       const url = getTagUrl(tag.id)
       setCreatedUrl(url)
       toast.success(`Created "${trimmedName}" tag!`)
-      
+
       // Reset form but keep the URL visible
       setName("")
       setDefaultAmount(hydrationRepository.getSettings().defaultGlass || 250)
-      
+      setAmountDraft(String(hydrationRepository.getSettings().defaultGlass || 250))
+
       // Scroll to URL section
       setTimeout(() => {
         urlInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -107,7 +109,7 @@ export function TagOnboarding() {
 
   const copyUrl = async () => {
     if (!createdUrl) return
-    
+
     try {
       await navigator.clipboard.writeText(createdUrl)
       setIsCopied(true)
@@ -118,6 +120,7 @@ export function TagOnboarding() {
   }
 
   const handleAmountChange = (value: string) => {
+    setAmountDraft(value)
     const numValue = Number(value)
     if (!isNaN(numValue) && numValue >= 0) {
       setDefaultAmount(numValue)
@@ -133,19 +136,19 @@ export function TagOnboarding() {
       <GlassCard className="relative overflow-hidden p-6 sm:p-8 md:p-10">
         {/* Background gradient */}
         <div className="absolute inset-x-0 top-0 h-52 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.15),transparent_65%)]" />
-        
+
         {/* Header */}
         <div className="relative">
-          <div className="flex items-center gap-3 text-cyan-600">
+          <div className="flex items-center gap-3 text-cyan-400">
             <Sparkles className="size-5" />
             <p className="text-sm font-semibold uppercase tracking-[0.34em]">Welcome to Hydra</p>
           </div>
-          
+
           <div className="mt-4 space-y-3">
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
               Create your first tag
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+            <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
               Set up your first NFC tag to start tracking your hydration. All data stays local on your device.
             </p>
           </div>
@@ -156,8 +159,8 @@ export function TagOnboarding() {
           <div className="grid gap-4 sm:grid-cols-[1.2fr_0.8fr]">
             {/* Name Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
-                Tag Name <span className="text-red-500">*</span>
+              <label className="text-sm font-medium text-foreground">
+                Tag Name <span className="text-destructive">*</span>
               </label>
               <input
                 ref={nameInputRef}
@@ -170,10 +173,10 @@ export function TagOnboarding() {
                   }
                 }}
                 placeholder="e.g., Kitchen Glass"
-                className={`h-12 w-full rounded-xl border bg-white/80 px-4 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-4 ${
-                  errors.name 
-                    ? 'border-red-300 focus:border-red-300 focus:ring-red-200/50' 
-                    : 'border-white/70 focus:border-cyan-300 focus:ring-cyan-200/50'
+                className={`h-12 w-full rounded-xl border bg-card/60 px-4 text-foreground outline-none transition placeholder:text-muted-foreground focus:ring-4 ${
+                  errors.name
+                    ? 'border-destructive/50 focus:border-destructive focus:ring-destructive/20'
+                    : 'border-border/60 focus:border-cyan-500/30 focus:ring-cyan-500/10'
                 }`}
                 maxLength={30}
                 disabled={isCreating}
@@ -182,11 +185,11 @@ export function TagOnboarding() {
               />
               <div className="flex items-center justify-between">
                 {errors.name ? (
-                  <p id="name-error" className="text-xs text-red-500">
+                  <p id="name-error" className="text-xs text-destructive">
                     {errors.name}
                   </p>
                 ) : (
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-muted-foreground">
                     {name.length}/30 characters
                   </p>
                 )}
@@ -195,8 +198,8 @@ export function TagOnboarding() {
 
             {/* Amount Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
-                Default Amount (ml) <span className="text-red-500">*</span>
+              <label className="text-sm font-medium text-foreground">
+                Default Amount (ml) <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <input
@@ -204,35 +207,36 @@ export function TagOnboarding() {
                   min={50}
                   max={5000}
                   step={25}
-                  value={defaultAmount || ''}
+                  value={amountDraft}
                   onChange={(event) => handleAmountChange(event.target.value)}
                   onBlur={() => {
                     // Auto-correct to nearest valid amount
                     if (defaultAmount < 50) setDefaultAmount(50)
-                    else if (defaultAmount > 5000) setDefaultAmount(5000)
+                    else if (defaultAmount > 5000) setDefaultAmount
                     else if (defaultAmount % 25 !== 0) {
                       setDefaultAmount(Math.round(defaultAmount / 25) * 25)
                     }
+                    setAmountDraft(String(defaultAmount))
                   }}
-                  className={`h-12 w-full rounded-xl bg-white/80 px-4 text-slate-900 outline-none transition focus:ring-4 ${
-                    errors.amount 
-                      ? 'border-red-300 focus:border-red-300 focus:ring-red-200/50' 
-                      : 'border border-white/70 focus:border-cyan-300 focus:ring-cyan-200/50'
+                  className={`h-12 w-full rounded-xl bg-card/60 px-4 text-foreground outline-none transition placeholder:text-muted-foreground focus:ring-4 ${
+                    errors.amount
+                      ? 'border-destructive/50 focus:border-destructive focus:ring-destructive/20'
+                      : 'border-border/60 focus:border-cyan-500/30 focus:ring-cyan-500/10'
                   }`}
                   disabled={isCreating}
                   aria-invalid={!!errors.amount}
                   aria-describedby={errors.amount ? "amount-error" : undefined}
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                   ml
                 </span>
               </div>
               {errors.amount ? (
-                <p id="amount-error" className="text-xs text-red-500">
+                <p id="amount-error" className="text-xs text-destructive">
                   {errors.amount}
                 </p>
               ) : (
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-muted-foreground">
                   Multiples of 25ml • 50-5000ml
                 </p>
               )}
@@ -240,8 +244,8 @@ export function TagOnboarding() {
           </div>
 
           {/* Submit Button */}
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full rounded-full sm:w-auto"
             disabled={isCreating}
           >
@@ -261,27 +265,27 @@ export function TagOnboarding() {
 
         {/* Success State - Created URL */}
         {createdUrl && (
-          <GlassCard 
+          <GlassCard
             ref={urlInputRef}
-            tone="accent" 
+            tone="accent"
             className="relative mt-6 animate-in fade-in slide-in-from-bottom-4 duration-300 sm:mt-8"
           >
             <div className="flex items-start gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-cyan-600">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-400">
                 <Check className="size-5" />
               </div>
               <div className="min-w-0 flex-1 space-y-3">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-600">
+                  <p className="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-400">
                     Tag Created! 🎉
                   </p>
-                  <p className="mt-1 text-sm text-slate-600">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Program your NFC sticker with this URL:
                   </p>
                 </div>
-                
-                <div className="flex flex-col gap-3 rounded-xl bg-white/70 p-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="break-all font-mono text-xs text-slate-700 sm:text-sm">
+
+                <div className="flex flex-col gap-3 rounded-xl bg-card/60 p-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="break-all font-mono text-xs text-foreground sm:text-sm">
                     {createdUrl}
                   </p>
                   <div className="flex items-center gap-2">
@@ -295,7 +299,7 @@ export function TagOnboarding() {
                     >
                       {isCopied ? (
                         <>
-                          <Check className="mr-1.5 size-4 text-green-500" />
+                          <Check className="mr-1.5 size-4 text-green-400" />
                           Copied!
                         </>
                       ) : (
@@ -314,8 +318,8 @@ export function TagOnboarding() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-slate-400">
-                  <Droplets className="size-3.5" />
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Droplets className="size-3.5 text-cyan-400" />
                   <span>Tap the URL with any NFC writer app to program your sticker</span>
                 </div>
               </div>

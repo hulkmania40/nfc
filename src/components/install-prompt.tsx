@@ -41,8 +41,8 @@ export function InstallPrompt() {
     <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-5">
       <GlassCard className="pointer-events-auto flex w-full max-w-md items-center justify-between gap-4 p-4">
         <div>
-          <p className="text-sm font-semibold text-slate-900">Install Hydra</p>
-          <p className="text-sm text-slate-600">Launch it like a native app and stay offline-ready.</p>
+          <p className="text-sm font-semibold text-foreground">Install Hydra</p>
+          <p className="text-sm text-muted-foreground">Launch it like a native app and stay offline-ready.</p>
         </div>
         <Button onClick={handleInstall} className="rounded-full px-4">
           <Download className="size-4" />

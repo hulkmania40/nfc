@@ -114,7 +114,7 @@ function TapFlow({ tagId, tagName, defaultAmount, todayIntake }: TapFlowProps) {
   // Loading / success state
   if (isLogging) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#070b14]">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-linear-to-b from-cyan-500/5 via-transparent to-blue-500/5" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-cyan-500/10 blur-[80px] animate-breathe" />
@@ -199,7 +199,7 @@ function TapFlow({ tagId, tagName, defaultAmount, todayIntake }: TapFlowProps) {
     <div className="flex min-h-svh items-center justify-center px-4 py-8">
       {/* Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-        <div className="absolute inset-0 bg-linear-to-b from-[#070b14] via-[#0a1220] to-[#070b14]" />
+        <div className="absolute inset-0 bg-background" />
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-96 w-96 rounded-full bg-cyan-500/5 blur-[100px] animate-breathe" />
         <div className="absolute bottom-0 inset-x-0 h-48 bg-linear-to-t from-cyan-500/3 to-transparent" />
       </div>

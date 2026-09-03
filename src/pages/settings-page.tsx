@@ -32,11 +32,29 @@ export function SettingsPage() {
 
   const [tagName, setTagName] = useState("")
   const [tagAmount, setTagAmount] = useState(settings.defaultGlass)
+  const [tagAmountDraft, setTagAmountDraft] = useState(String(settings.defaultGlass))
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null)
   const [resetRequested, setResetRequested] = useState(false)
   const [copySuccess, setCopySuccess] = useState<string | null>(null)
 
+  // Sync tag amount draft when default glass changes externally
+  useEffect(() => {
+    setTagAmountDraft(String(settings.defaultGlass))
+  }, [settings.defaultGlass])
+
+  // Local state for number inputs to allow typing intermediate values
+  const [goalDraft, setGoalDraft] = useState(String(settings.dailyGoal))
+  const [glassDraft, setGlassDraft] = useState(String(settings.defaultGlass))
+
   const deleteTarget = useMemo(() => tags.find((tag) => tag.id === deleteTargetId) ?? null, [deleteTargetId, tags])
+
+  // Sync drafts when settings change externally
+  useEffect(() => {
+    setGoalDraft(String(settings.dailyGoal))
+  }, [settings.dailyGoal])
+  useEffect(() => {
+    setGlassDraft(String(settings.defaultGlass))
+  }, [settings.defaultGlass])
 
   useEffect(() => {
     if (copySuccess) {
@@ -62,6 +80,7 @@ export function SettingsPage() {
     addTag({ name: trimmedName, defaultAmount: tagAmount })
     setTagName("")
     setTagAmount(settings.defaultGlass)
+    setTagAmountDraft(String(settings.defaultGlass))
     toast.success(`Added "${trimmedName}" tag`)
   }
 
@@ -131,14 +150,18 @@ export function SettingsPage() {
                   min={500}
                   max={10000}
                   step={50}
-                  value={settings.dailyGoal}
-                  onChange={(event) => {
-                    const value = Number(event.target.value)
-                    if (value >= 500 && value <= 10000) {
-                      setDailyGoal(value)
+                  value={goalDraft}
+                  onChange={(event) => setGoalDraft(event.target.value)}
+                  onBlur={() => {
+                    const num = Number(goalDraft)
+                    if (!isNaN(num) && num >= 500 && num <= 10000) {
+                      setDailyGoal(Math.round(num / 50) * 50)
+                    } else {
+                      setDailyGoal(500)
                     }
+                    setGoalDraft(String(settings.dailyGoal))
                   }}
-                  className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-10 text-sm text-foreground outline-none transition focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
+                  className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-10 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                   ml
@@ -157,14 +180,18 @@ export function SettingsPage() {
                   min={50}
                   max={1000}
                   step={25}
-                  value={settings.defaultGlass}
-                  onChange={(event) => {
-                    const value = Number(event.target.value)
-                    if (value >= 50 && value <= 1000) {
-                      setDefaultGlass(value)
+                  value={glassDraft}
+                  onChange={(event) => setGlassDraft(event.target.value)}
+                  onBlur={() => {
+                    const num = Number(glassDraft)
+                    if (!isNaN(num) && num >= 50 && num <= 1000) {
+                      setDefaultGlass(Math.round(num / 25) * 25)
+                    } else {
+                      setDefaultGlass(50)
                     }
+                    setGlassDraft(String(settings.defaultGlass))
                   }}
-                  className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-10 text-sm text-foreground outline-none transition focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
+                  className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-10 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                   ml
@@ -210,16 +237,20 @@ export function SettingsPage() {
                   <input
                     type="number"
                     min={50}
-                    max={1000}
+                    max={5000}
                     step={25}
-                    value={tagAmount}
-                    onChange={(event) => {
-                      const value = Number(event.target.value)
-                      if (value >= 50 && value <= 1000) {
-                        setTagAmount(value)
+                    value={tagAmountDraft}
+                    onChange={(event) => setTagAmountDraft(event.target.value)}
+                    onBlur={() => {
+                      const num = Number(tagAmountDraft)
+                      if (!isNaN(num) && num >= 50 && num <= 5000) {
+                        setTagAmount(Math.round(num / 25) * 25)
+                      } else {
+                        setTagAmount(50)
                       }
+                      setTagAmountDraft(String(settings.defaultGlass))
                     }}
-                    className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-8 text-sm text-foreground outline-none transition focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
+                    className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-8 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
                     ml

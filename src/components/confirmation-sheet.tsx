@@ -87,19 +87,19 @@ export function ConfirmationSheet({
       aria-describedby={description ? "confirmation-description" : undefined}
     >
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-slate-950/30 backdrop-blur-sm transition-opacity"
+      <div
+        className="absolute inset-0 bg-background/30 backdrop-blur-sm transition-opacity"
         onClick={onCancel}
         aria-hidden="true"
       />
-      
+
       {/* Sheet */}
       <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200 sm:max-w-lg">
         <GlassCard className="relative overflow-hidden p-6 text-center sm:p-8">
           {/* Close button - mobile friendly */}
           <button
             onClick={onCancel}
-            className="absolute right-3 top-3 rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors sm:right-4 sm:top-4"
+            className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors sm:right-4 sm:top-4"
             aria-label="Close"
           >
             <X className="size-4 sm:size-5" />
@@ -109,7 +109,7 @@ export function ConfirmationSheet({
           <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.12),transparent_62%)]" />
 
           {/* Icon */}
-          <div className="relative mx-auto flex size-20 items-center justify-center rounded-full bg-cyan-50/90 shadow-inner shadow-cyan-200/50 sm:size-24">
+          <div className="relative mx-auto flex size-20 items-center justify-center rounded-full bg-cyan-500/10 shadow-inner shadow-cyan-500/10 sm:size-24">
             <div className="flex size-14 items-center justify-center rounded-full bg-linear-to-br from-cyan-400 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 sm:size-16">
               {icon || <Droplets className="size-6 sm:size-8" />}
             </div>
@@ -117,32 +117,32 @@ export function ConfirmationSheet({
 
           {/* Content */}
           <div className="relative mt-6 space-y-3 sm:mt-8">
-            <p className="text-xs font-medium uppercase tracking-[0.3em] text-cyan-600 sm:text-sm">
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-cyan-400 sm:text-sm">
               Hydration Check
             </p>
-            
-            <h2 
+
+            <h2
               id="confirmation-title"
-              className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl"
+              className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
             >
               {title}
             </h2>
-            
-            <div className="text-3xl font-semibold tracking-tight text-cyan-600 sm:text-4xl md:text-5xl">
+
+            <div className="text-3xl font-semibold tracking-tight text-cyan-400 sm:text-4xl md:text-5xl">
               {amountLabel}
             </div>
-            
+
             {description && (
-              <p 
+              <p
                 id="confirmation-description"
-                className="mx-auto max-w-sm text-sm leading-6 text-slate-500 sm:text-base"
+                className="mx-auto max-w-sm text-sm leading-6 text-muted-foreground sm:text-base"
               >
                 {description}
               </p>
             )}
-            
+
             {extraInfo && (
-              <div className="mt-4 border-t border-slate-100 pt-4">
+              <div className="mt-4 border-t border-border/40 pt-4">
                 {extraInfo}
               </div>
             )}
@@ -159,7 +159,7 @@ export function ConfirmationSheet({
             >
               {secondaryLabel}
             </Button>
-            
+
             <Button
               ref={confirmButtonRef}
               variant={confirmVariant}

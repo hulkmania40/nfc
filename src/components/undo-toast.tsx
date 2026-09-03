@@ -30,8 +30,8 @@ export function UndoToast() {
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-200">
           <GlassCard className="pointer-events-auto flex items-center justify-between gap-4 p-4">
             <div>
-              <p className="text-sm font-semibold text-slate-900">Added {pendingUndo.amount}ml</p>
-              <p className="text-sm text-slate-600">Undo available for 5 seconds.</p>
+              <p className="text-sm font-semibold text-foreground">Added {pendingUndo.amount}ml</p>
+              <p className="text-sm text-muted-foreground">Undo available for 5 seconds.</p>
             </div>
             <Button variant="secondary" className="rounded-full px-4" onClick={undoLastEntry}>
               <Undo2 className="size-4" />

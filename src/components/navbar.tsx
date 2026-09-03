@@ -61,7 +61,7 @@ export function Navbar() {
                     "flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm",
                     active
                       ? "bg-cyan-500/15 text-cyan-400 shadow-[0_0_16px_rgba(34,211,238,0.12)]"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   )}
                 >
                   <Icon className={cn("size-4", active && "text-cyan-400")} />
@@ -72,7 +72,7 @@ export function Navbar() {
 
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="ml-1 flex size-9 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+              className="ml-1 flex size-9 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <SunDim className="size-4" /> : <Moon className="size-4" />}
@@ -89,7 +89,7 @@ export function BottomTabNav() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-5xl px-3 pb-3 sm:pb-5">
+    <nav className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-5xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-[max(1.25rem,env(safe-area-inset-bottom))]">
       <div className="glass-strong flex items-center justify-around rounded-[1.25rem] px-2 py-1.5 sm:rounded-[1.5rem] sm:px-3 sm:py-2">
         {tagNavItems.map((item) => {
           const active = location.pathname === item.to || (item.to === "/tap/quick" && location.pathname.startsWith("/tap"))
@@ -102,7 +102,7 @@ export function BottomTabNav() {
                 "flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 transition-all duration-200 sm:gap-1 sm:px-4 sm:py-2",
                 active
                   ? "text-cyan-400"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
               )}
             >
               <div className="relative">
@@ -119,7 +119,7 @@ export function BottomTabNav() {
         })}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground sm:gap-1 sm:px-4 sm:py-2"
+          className="flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted/30 sm:gap-1 sm:px-4 sm:py-2"
           aria-label="Toggle theme"
         >
           {theme === "dark" ? <SunDim className="size-5" /> : <Moon className="size-5" />}
