@@ -1,119 +1,181 @@
-import { HeroSection } from "@/components/hero-section"
+import { Link } from "react-router-dom"
+import { ArrowRight, Droplets, WifiOff, Smartphone, Waves } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/glass-card"
-import { Navbar } from "@/components/navbar"
-import { ProgressRing } from "@/components/progress-ring"
-import { WeeklyChart } from "@/components/weekly-chart"
+
+const features = [
+  {
+    icon: WifiOff,
+    title: "Offline First",
+    description: "Your data stays on your device. No cloud, no internet needed.",
+  },
+  {
+    icon: Smartphone,
+    title: "Installable PWA",
+    description: "Add to your home screen. Works like a native app.",
+  },
+  {
+    icon: Waves,
+    title: "NFC Tap to Log",
+    description: "Tap your phone on any sticker. Water logged instantly.",
+  },
+]
+
+function AnimatedDroplets() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+      {[...Array(8)].map((_, i) => (
+        <Droplets
+          key={i}
+          className="absolute text-cyan-500/15 animate-droplet"
+          size={12 + (i % 3) * 8}
+          style={{
+            left: `${15 + (i * 12) % 70}%`,
+            animationDelay: `${i * 0.7}s`,
+            animationDuration: `${2.5 + (i % 3)}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 export function LandingPage() {
   return (
-    <div className="min-h-svh pb-8 pt-2">
-      <Navbar />
+    <div className="min-h-svh pb-28 pt-2">
+      <div className="relative overflow-hidden">
+        {/* Background layers */}
+        <div className="absolute inset-0 -z-20 bg-linear-to-b from-[#070b14] via-[#0a1220] to-[#070b14]" />
+        <div
+          className="absolute -top-40 -left-40 h-125 w-125 -z-10 rounded-full bg-cyan-500/6 blur-[120px] animate-breathe"
+        />
+        <div
+          className="absolute -top-20 -right-20 h-100 w-100 -z-10 rounded-full bg-blue-500/5 blur-[100px] animate-breathe"
+          style={{ animationDelay: "2s" }}
+        />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.07),transparent_50%)]" />
 
-      <div className="space-y-8 md:space-y-12">
-        {/* Mobile-optimized Hero */}
-        <HeroSection />
+        <AnimatedDroplets />
 
-        {/* Core Workflow - Stack on mobile, side-by-side on desktop */}
-        <section className="mx-auto grid w-full max-w-7xl gap-4 px-4 sm:px-5 md:gap-6 md:px-8 lg:grid-cols-[1fr_0.9fr]">
-          <GlassCard className="overflow-hidden p-0">
-            <div className="grid gap-4 p-4 sm:p-6 md:p-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-              <div className="space-y-3 md:space-y-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-600 md:text-sm">
-                  How it works
-                </p>
-                <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
-                  Log hydration in 3 steps
-                </h2>
-                <p className="text-sm leading-6 text-slate-600 md:text-base md:leading-7">
-                  Simple NFC-based tracking with offline-first data storage.
-                </p>
+        <div className="mx-auto w-full max-w-5xl px-4 pt-12 sm:px-5 sm:pt-16 md:pt-20 lg:pt-24">
+          {/* Nav */}
+          <nav className="flex items-center justify-between mb-16 sm:mb-24">
+            <div className="flex items-center gap-2.5">
+              <div className="relative flex size-10 items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-cyan-500/20 animate-pulse-glow" />
+                <Droplets className="size-5 text-cyan-400 relative z-10" />
               </div>
-              <div className="grid gap-2 sm:gap-3">
-                {[
-                  ["1", "Add a glass", "Name your container and set a default amount (e.g., 500ml)."],
-                  ["2", "Tap to confirm", "Each tap logs your intake with a confirmation step."],
-                  ["3", "Track progress", "View your history and daily totals at a glance."],
-                ].map(([step, title, description]) => (
-                  <div 
-                    key={title} 
-                    className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:p-4"
-                  >
-                    <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-xs font-semibold text-cyan-700 sm:size-8 sm:text-sm">
-                      {step}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-medium text-slate-900 sm:text-base">{title}</h3>
-                      <p className="mt-0.5 text-xs leading-5 text-slate-500 sm:mt-1 sm:text-sm sm:leading-6">
-                        {description}
-                      </p>
-                    </div>
+              <div>
+                <span className="text-sm font-bold tracking-[0.2em] text-foreground">HYDRA</span>
+                <p className="text-[10px] text-muted-foreground tracking-wide hidden sm:block">NFC hydration tracker</p>
+              </div>
+            </div>
+            <Link to="/dashboard">
+              <Button size="sm" className="rounded-full bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25 border border-cyan-500/20">
+                Launch App
+                <ArrowRight className="ml-1.5 size-3.5" />
+              </Button>
+            </Link>
+          </nav>
+
+          {/* Hero */}
+          <section className="text-center max-w-3xl mx-auto mb-20 sm:mb-28">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/15 bg-cyan-500/8 px-4 py-1.5 text-xs font-medium text-cyan-400 mb-8 animate-fade-in">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inset-0 rounded-full bg-cyan-400 animate-ping opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-cyan-400" />
+              </span>
+              Tap to Track Hydration
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] text-foreground mb-6 animate-slide-up">
+              Hydrate
+              <br />
+              <span className="text-gradient-water">without thinking.</span>
+            </h1>
+
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed text-muted-foreground max-w-xl mx-auto mb-10 animate-fade-in delay-300">
+              Register an NFC sticker on your bottle. Tap your phone. Water logged.
+              No apps to open, no buttons to press.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in delay-400">
+              <Link to="/dashboard">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto rounded-full bg-cyan-500 text-[#070b14] font-semibold hover:bg-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.3)] transition-all duration-300 hover:shadow-[0_0_40px_rgba(34,211,238,0.4)]"
+                >
+                  Open Dashboard
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </Link>
+              <Link to="/settings">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto rounded-full border-border text-muted-foreground hover:text-foreground hover:border-cyan-500/30"
+                >
+                  <Droplets className="mr-2 size-4" />
+                  Set Up NFC Tag
+                </Button>
+              </Link>
+            </div>
+          </section>
+
+          {/* Feature cards */}
+          <section className="grid gap-3 sm:gap-4 sm:grid-cols-3 mb-20 sm:mb-28 max-w-4xl mx-auto">
+            {features.map((feature) => {
+              const Icon = feature.icon
+              return (
+                <GlassCard
+                  key={feature.title}
+                  tone="default"
+                  className="group text-center p-5 sm:p-6 hover:border-cyan-500/20 animate-fade-in"
+                >
+                  <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="size-5" />
                   </div>
-                ))}
-              </div>
-            </div>
-          </GlassCard>
+                  <h3 className="mt-4 text-sm font-semibold text-foreground">{feature.title}</h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </GlassCard>
+              )
+            })}
+          </section>
 
-          {/* Data Display - Responsive chart */}
-          <GlassCard className="space-y-4 p-4 sm:p-5 md:p-6">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-600 md:text-sm">
-                Your data
-              </p>
-              <h3 className="mt-1 text-lg font-medium text-slate-900 sm:text-xl">
-                Daily summary
-              </h3>
+          {/* How it works - visual flow */}
+          <section className="max-w-2xl mx-auto mb-20 sm:mb-28">
+            <h2 className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground mb-8">
+              How it works
+            </h2>
+            <div className="grid gap-3 sm:gap-4">
+              {[
+                { step: "01", title: "Create a tag", desc: "Name your bottle and set the amount (e.g. 250ml)" },
+                { step: "02", title: "Copy the URL", desc: "Program your NFC sticker with the provided link" },
+                { step: "03", title: "Tap to log", desc: "Stick it on your bottle, tap your phone, done" },
+              ].map((item) => (
+                <GlassCard key={item.step} tone="default" className="flex items-center gap-4 p-4 sm:p-5 hover:border-cyan-500/15">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-400 font-mono text-sm font-bold">
+                    {item.step}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  </div>
+                </GlassCard>
+              ))}
             </div>
-            <div className="grid gap-4">
-              <div className="flex items-center justify-center rounded-2xl bg-white/70 py-4 sm:py-6">
-                <ProgressRing 
-                  value={72} 
-                  size={window.innerWidth < 640 ? 140 : 160} 
-                  label="Today's goal" 
-                  className="max-w-32 sm:max-w-40" 
-                />
-              </div>
-              <div className="w-full overflow-x-auto">
-                <div className="min-w-70 sm:min-w-0">
-                  <WeeklyChart
-                    goal={2500}
-                    series={[
-                      { date: new Date(), key: "m", label: "Mon", total: 1200 },
-                      { date: new Date(), key: "t", label: "Tue", total: 1900 },
-                      { date: new Date(), key: "w", label: "Wed", total: 2500 },
-                      { date: new Date(), key: "th", label: "Thu", total: 1800 },
-                      { date: new Date(), key: "f", label: "Fri", total: 2100 },
-                      { date: new Date(), key: "s", label: "Sat", total: 900 },
-                      { date: new Date(), key: "su", label: "Sun", total: 1650 },
-                    ]}
-                  />
-                </div>
-              </div>
-            </div>
-          </GlassCard>
-        </section>
+          </section>
 
-        {/* Key Features - Stack on mobile, grid on desktop */}
-        <section className="mx-auto grid w-full max-w-7xl gap-3 px-4 sm:px-5 md:gap-5 md:px-8 lg:grid-cols-3">
-          {[
-            ["Offline-first", "Data is stored locally. No internet connection required."],
-            ["NFC integration", "Simple tap-to-log functionality with confirmation."],
-            ["Daily analytics", "View your hydration patterns and trends."],
-          ].map(([title, description]) => (
-            <div 
-              key={title} 
-              className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 md:p-6"
-            >
-              <h3 className="text-base font-medium text-slate-900 sm:text-lg">{title}</h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500 sm:mt-2 sm:text-sm md:leading-7">
-                {description}
-              </p>
-            </div>
-          ))}
-        </section>
-
-        <footer className="mx-auto w-full max-w-7xl px-4 pb-6 text-center text-xs text-slate-400 sm:px-5 sm:text-sm md:px-8 md:pb-8">
-          <span>Hydra — Local-first hydration tracker</span>
-        </footer>
+          {/* Footer */}
+          <footer className="text-center pb-6">
+            <p className="text-[10px] text-muted-foreground/60 tracking-wider">
+              HYDRA — Local-first hydration tracker
+            </p>
+          </footer>
+        </div>
       </div>
     </div>
   )

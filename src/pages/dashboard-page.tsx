@@ -1,12 +1,11 @@
 import { useMemo, type ComponentType } from "react"
 import { Link } from "react-router-dom"
 import {
-  Clock3,
   Flame,
-  Goal,
-  RefreshCw,
-  Sparkles,
+  Gauge,
   Droplets,
+  Clock3,
+  TrendingUp,
 } from "lucide-react"
 import { format } from "date-fns"
 
@@ -17,7 +16,9 @@ import { GlassCard } from "@/components/glass-card"
 import { HydrationCalendar } from "@/components/hydration-calendar"
 import { Navbar } from "@/components/navbar"
 import { ProgressRing } from "@/components/progress-ring"
+import { BottomTabNav } from "@/components/navbar"
 import { TagOnboarding } from "@/components/tag-onboarding"
+import { WaterGlass } from "@/components/water-glass"
 import { WeeklyChart } from "@/components/weekly-chart"
 import { useHydrationStore } from "@/stores/hydration-store"
 import { useSettingsStore } from "@/stores/settings-store"
@@ -29,44 +30,30 @@ import {
   getGoalCompletion,
   getHydrationLevel,
   getLastDrink,
-  getLongestStreak,
-  getMonthlyTotals,
-  getTodayIntake,
   getWeeklySeries,
+  getTodayIntake,
 } from "@/utils/hydration"
 
-// Simplified Metric Card - Less visual weight
 function MetricCard({
   icon: Icon,
   label,
   value,
-  trend,
+  sub,
 }: {
   icon: ComponentType<{ className?: string }>
   label: string
   value: string
-  trend?: { value: number; label: string }
+  sub?: string
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
-      <div className="flex items-start gap-2 sm:gap-3">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 sm:size-10">
-          <Icon className="size-3.5 sm:size-4" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-medium text-slate-500 sm:text-xs">
-            {label}
-          </p>
-          <p className="mt-0.5 text-base font-semibold text-slate-900 sm:text-lg">
-            {value}
-          </p>
-          {trend && (
-            <p className="mt-0.5 text-[10px] text-slate-400 sm:text-xs">
-              {trend.value > 0 ? "+" : ""}
-              {trend.value}% {trend.label}
-            </p>
-          )}
-        </div>
+    <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3 transition-colors hover:border-cyan-500/15">
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+        <Icon className="size-4" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+        <p className="text-sm font-semibold text-foreground truncate">{value}</p>
+        {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
       </div>
     </div>
   )
@@ -79,16 +66,8 @@ export function DashboardPage() {
 
   const todayIntake = useMemo(() => getTodayIntake(logs), [logs])
   const weeklySeries = useMemo(() => getWeeklySeries(logs), [logs])
-  const monthlyTotals = useMemo(() => getMonthlyTotals(logs), [logs])
   const averageIntake = useMemo(() => getAverageIntake(logs), [logs])
-  const currentStreak = useMemo(
-    () => getCurrentStreak(logs, settings.dailyGoal),
-    [logs, settings.dailyGoal]
-  )
-  const longestStreak = useMemo(
-    () => getLongestStreak(logs, settings.dailyGoal),
-    [logs, settings.dailyGoal]
-  )
+  const currentStreak = useMemo(() => getCurrentStreak(logs, settings.dailyGoal), [logs, settings.dailyGoal])
   const completion = getGoalCompletion(todayIntake, settings.dailyGoal)
   const hydrationLevel = getHydrationLevel(todayIntake, settings.dailyGoal)
   const lastDrink = getLastDrink(logs)
@@ -97,7 +76,7 @@ export function DashboardPage() {
     () =>
       [...logs]
         .sort((left, right) => right.timestamp.localeCompare(left.timestamp))
-        .slice(0, 4),
+        .slice(0, 5),
     [logs]
   )
 
@@ -105,13 +84,11 @@ export function DashboardPage() {
     () =>
       logs.filter(
         (log) =>
-          format(new Date(log.timestamp), "yyyy-MM-dd") ===
-          format(new Date(), "yyyy-MM-dd")
+          format(new Date(log.timestamp), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")
       ),
     [logs]
   )
 
-  // Get time-based greeting
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 12) return "Good morning"
@@ -119,252 +96,157 @@ export function DashboardPage() {
     return "Good evening"
   }
 
+  const motivationalMessage =
+    completion >= 100
+      ? "You crushed it! Goal reached."
+      : completion >= 75
+        ? "Almost there, keep sipping!"
+        : completion >= 50
+          ? "Halfway there. You got this."
+          : completion > 0
+            ? "Every sip counts. Keep going."
+            : "Time to start hydrating!"
+
   if (tags.length === 0) {
     return <TagOnboarding />
   }
 
   return (
-    <div className="min-h-svh pt-2 pb-8">
+    <div className="min-h-svh pb-24 pt-2">
       <Navbar />
 
-      <div className="mx-auto mt-4 w-full max-w-7xl space-y-4 px-4 sm:mt-6 sm:space-y-6 sm:px-5 md:px-8">
-        {/* Main Dashboard Card - Mobile Optimized */}
-        <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <GlassCard className="overflow-hidden p-4 sm:p-6 md:p-8">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center">
-              {/* Left Content - Mobile First */}
-              <div className="flex-1 space-y-3 sm:space-y-4">
-                {/* Greeting Badge - Mobile Optimized */}
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-cyan-50 px-3 py-1.5 text-xs font-medium text-cyan-700 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
-                  <Sparkles className="size-3 sm:size-3.5" />
-                  <span className="whitespace-nowrap">{getGreeting()}! 👋</span>
-                </div>
+      <div className="mx-auto w-full max-w-5xl space-y-4 px-3 sm:space-y-5 sm:px-5">
+        {/* Hero Card - Greeting + Progress */}
+        <GlassCard className="relative overflow-hidden p-5 sm:p-6 md:p-8">
+          <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-cyan-500/4 blur-[80px]" aria-hidden="true" />
+          <div className="relative grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/15 bg-cyan-500/8 px-3 py-1 text-[11px] font-medium text-cyan-400">
+                <Gauge className="size-3" />
+                {getGreeting()}
+              </div>
 
-                {/* Progress Message - Responsive */}
-                <div>
-                  <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl md:text-3xl lg:text-4xl">
-                    {completion >= 80
-                      ? "You're crushing it! 💪"
-                      : completion >= 50
-                        ? "Keep the momentum going! 🚀"
-                        : "Let's start hydrating! 💧"}
-                  </h1>
-                  <p className="mt-1 text-sm leading-5 text-slate-500 sm:mt-2 sm:text-base sm:leading-6">
-                    {completion >= 80
-                      ? "Amazing progress today! You're well on your way."
-                      : completion >= 50
-                        ? "You're halfway to your goal. Stay consistent!"
-                        : "Every drop counts. Let's reach your daily goal together."}
-                  </p>
-                </div>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                  {motivationalMessage}
+                </h1>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {todayIntake.toLocaleString()} of {settings.dailyGoal.toLocaleString()} ml today
+                </p>
+              </div>
 
-                {/* Quick Action Buttons - Horizontal scroll on mobile */}
-                <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
-                  {tags.slice(0, 3).map((tag) => (
+              {/* Quick tap buttons */}
+              <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 sm:flex-wrap sm:mx-0 sm:px-0">
+                {tags.slice(0, 4).map((tag) => (
+                  <Link key={tag.id} to={`/tap/${tag.id}`}>
                     <Button
-                      asChild
-                      key={tag.id}
                       variant="outline"
                       size="sm"
-                      className="shrink-0 rounded-full border-slate-200 text-xs sm:text-sm"
+                      className="shrink-0 rounded-full border-cyan-500/15 bg-cyan-500/5 text-cyan-400 text-xs hover:bg-cyan-500/15 hover:text-cyan-300 hover:border-cyan-500/30 transition-all"
                     >
-                      <Link to={`/tap/${tag.id}`}>
-                        <Droplets className="mr-1 size-3 sm:mr-1.5 sm:size-3.5" />
-                        <span className="whitespace-nowrap">{tag.name}</span>
-                      </Link>
+                      <Droplets className="mr-1.5 size-3.5" />
+                      {tag.name}
+                      <span className="ml-1.5 text-cyan-400/60">({tag.defaultAmount}ml)</span>
                     </Button>
-                  ))}
-                  {tags.length > 3 && (
-                    <Button
-                      asChild
-                      variant="ghost"
-                      size="sm"
-                      className="shrink-0 rounded-full text-xs sm:text-sm"
-                    >
-                      <Link to="/tags">
-                        <span className="whitespace-nowrap">
-                          +{tags.length - 3} more
-                        </span>
-                      </Link>
-                    </Button>
-                  )}
-                </div>
+                  </Link>
+                ))}
               </div>
+            </div>
 
-              {/* Progress Ring - Clean, no duplicate progress bar */}
-              <div className="flex justify-center md:justify-end">
-                <div className="relative flex w-full max-w-44 items-center justify-center rounded-2xl bg-slate-50/50 p-3 sm:max-w-52 sm:p-4">
-                  <ProgressRing
-                    value={hydrationLevel}
-                    size={180}
-                    className="max-w-36 sm:max-w-44 md:max-w-48"
+            {/* Progress ring + water glass */}
+            <div className="flex items-center justify-center gap-5 sm:gap-6">
+              <div className="relative">
+                <ProgressRing value={hydrationLevel} size={140} strokeWidth={10} />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <AnimatedCounter
+                    value={todayIntake}
+                    className="text-xl font-bold text-foreground"
+                    suffix=""
                   />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center sm:px-6">
-                    <p className="text-[8px] font-medium tracking-[0.2em] text-slate-400 uppercase sm:text-[10px]">
-                      Today
-                    </p>
-                    <AnimatedCounter
-                      value={todayIntake}
-                      className="mt-0.5 text-xl font-semibold tracking-tight text-slate-900 sm:mt-1 sm:text-2xl md:text-3xl"
-                      suffix=" ml"
-                    />
-                    <p className="mt-0.5 text-[10px] text-slate-400 sm:text-xs">
-                      of {settings.dailyGoal.toLocaleString()} ml
-                    </p>
-                    {/* Removed the duplicate progress bar */}
-                  </div>
+                  <span className="text-[9px] text-muted-foreground mt-0.5">ml</span>
                 </div>
               </div>
-            </div>
-          </GlassCard>
-
-          {/* Stats Grid - Simplified with better mobile spacing */}
-          <div className="grid gap-3 sm:gap-4">
-            <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-medium tracking-wider text-slate-500 uppercase sm:text-xs">
-                  Today's stats
-                </p>
-                <span className="text-[10px] text-slate-400 sm:text-xs">
-                  {completion}% complete
-                </span>
-              </div>
-              <div className="mt-2 grid grid-cols-2 gap-1.5 sm:mt-3 sm:gap-2">
-                <MetricCard
-                  icon={Goal}
-                  label="Progress"
-                  value={`${completion}%`}
-                  trend={{ value: completion - 50, label: "vs goal" }}
-                />
-                <MetricCard
-                  icon={Flame}
-                  label="Streak"
-                  value={`${currentStreak}d`}
-                />
-                <MetricCard
-                  icon={Droplets}
-                  label="Glasses"
-                  value={`${todayGlasses.length}`}
-                />
-                <MetricCard
-                  icon={Clock3}
-                  label="Last"
-                  value={
-                    lastDrink
-                      ? format(new Date(lastDrink.timestamp), "h:mm a")
-                      : "—"
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-medium tracking-wider text-slate-500 uppercase sm:text-xs">
-                  Insights
-                </p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 text-[10px] sm:h-7 sm:text-xs"
-                >
-                  <RefreshCw className="mr-1 size-2.5 sm:size-3" />
-                  <span className="hidden sm:inline">Sync</span>
-                </Button>
-              </div>
-              <div className="mt-2 grid grid-cols-3 gap-1.5 sm:mt-3 sm:gap-2">
-                <div className="rounded-lg bg-slate-50/50 p-2 text-center sm:p-3">
-                  <p className="text-[9px] text-slate-400 sm:text-xs">Avg</p>
-                  <p className="text-xs font-semibold text-slate-900 sm:text-sm">
-                    {formatMilliliters(averageIntake)}
-                  </p>
-                </div>
-                <div className="rounded-lg bg-slate-50/50 p-2 text-center sm:p-3">
-                  <p className="text-[9px] text-slate-400 sm:text-xs">Best</p>
-                  <p className="text-xs font-semibold text-slate-900 sm:text-sm">
-                    {longestStreak}d
-                  </p>
-                </div>
-                <div className="rounded-lg bg-slate-50/50 p-2 text-center sm:p-3">
-                  <p className="text-[9px] text-slate-400 sm:text-xs">
-                    Monthly
-                  </p>
-                  <p className="text-xs font-semibold text-slate-900 sm:text-sm">
-                    {formatMilliliters(monthlyTotals.total)}
-                  </p>
-                </div>
+              <div className="hidden sm:block">
+                <WaterGlass percentage={hydrationLevel} size={80} />
               </div>
             </div>
           </div>
-        </section>
+        </GlassCard>
 
-        {/* Chart and Recent Logs */}
-        <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+        {/* Stats row */}
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+          <MetricCard icon={Flame} label="Streak" value={`${currentStreak}d`} sub={currentStreak > 0 ? "days hydrated" : "start today"} />
+          <MetricCard icon={Droplets} label="Glasses" value={`${todayGlasses.length}`} sub="today" />
+          <MetricCard icon={Clock3} label="Last drink" value={lastDrink ? format(new Date(lastDrink.timestamp), "h:mm a") : "—"} />
+          <MetricCard icon={TrendingUp} label="Avg / day" value={formatMilliliters(averageIntake)} sub="last 30d" />
+        </div>
+
+        {/* Chart + Recent logs */}
+        <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
           <WeeklyChart series={weeklySeries} goal={settings.dailyGoal} />
 
-          <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
-            <div className="flex items-center justify-between gap-2">
+          <GlassCard className="p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-[10px] font-medium tracking-wider text-slate-500 uppercase sm:text-xs">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
                   Recent logs
                 </p>
-                <h3 className="mt-0.5 text-sm font-medium text-slate-900">
+                <h3 className="text-sm font-semibold text-foreground mt-0.5">
                   Latest drinks
                 </h3>
               </div>
-              {recentLogs.length > 0 && (
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="text-[10px] sm:text-xs"
-                >
-                  <Link to="/history">View all</Link>
+              <Link to="/history">
+                <Button variant="ghost" size="sm" className="h-7 text-[10px] text-muted-foreground hover:text-foreground">
+                  View all
                 </Button>
-              )}
+              </Link>
             </div>
 
             {recentLogs.length === 0 ? (
               <EmptyState
                 title="No drinks yet"
-                description="Tap a glass to start tracking your hydration."
+                description="Tap a glass to start."
                 action={
-                  <Button asChild size="sm" className="rounded-full">
-                    <Link to={`/tap/${tags[0]?.id ?? ""}`}>Start tracking</Link>
-                  </Button>
+                  <Link to={`/tap/${tags[0]?.id ?? ""}`}>
+                    <Button size="sm" className="rounded-full mt-3 bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25 border border-cyan-500/20">
+                      Start tracking
+                    </Button>
+                  </Link>
                 }
               />
             ) : (
-              <div className="mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">
+              <div className="space-y-1.5 max-h-70 overflow-y-auto pr-1">
                 {recentLogs.map((log) => {
                   const tag = tags.find((item) => item.id === log.tagId)
                   return (
                     <div
                       key={log.id}
-                      className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50/50 px-2.5 py-2 sm:px-3 sm:py-2.5"
+                      className="flex items-center justify-between rounded-xl border border-border/40 bg-card/50 px-3 py-2.5 transition-colors hover:border-cyan-500/10"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium text-slate-900 sm:text-sm">
+                        <p className="text-xs font-medium text-foreground truncate">
                           {tag?.name ?? "NFC tap"}
                         </p>
-                        <p className="text-[10px] text-slate-400 sm:text-xs">
+                        <p className="text-[10px] text-muted-foreground">
                           {format(new Date(log.timestamp), "h:mm a · MMM d")}
                         </p>
                       </div>
-                      <p className="text-xs font-semibold text-cyan-600 sm:text-sm">
+                      <span className="text-xs font-semibold text-cyan-400 ml-2">
                         {formatMilliliters(log.amount)}
-                      </p>
+                      </span>
                     </div>
                   )
                 })}
               </div>
             )}
-          </div>
-        </section>
+          </GlassCard>
+        </div>
 
-        {/* Calendar - Simplified */}
+        {/* Calendar */}
         <HydrationCalendar logs={logs} tags={tags} goal={settings.dailyGoal} />
       </div>
+
+      <BottomTabNav />
     </div>
   )
 }

@@ -1,11 +1,12 @@
 import { useMemo, useState, type FormEvent, useEffect } from "react"
-import { Copy, PlusCircle, Trash2, Check, RefreshCw } from "lucide-react"
+import { Copy, PlusCircle, Trash2, Check, RefreshCw, Scan, Gauge, Droplets, Shield } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { ConfirmationSheet } from "@/components/confirmation-sheet"
 import { GlassCard } from "@/components/glass-card"
 import { Navbar } from "@/components/navbar"
+import { BottomTabNav } from "@/components/navbar"
+import { ConfirmationSheet } from "@/components/confirmation-sheet"
 import { hydrationRepository } from "@/services/hydration-repository"
 import { useHydrationStore } from "@/stores/hydration-store"
 import { useSettingsStore } from "@/stores/settings-store"
@@ -25,8 +26,6 @@ export function SettingsPage() {
   const resetSettings = useSettingsStore((state) => state.resetSettings)
   const tags = useTagStore((state) => state.tags)
   const addTag = useTagStore((state) => state.addTag)
-  const renameTag = useTagStore((state) => state.renameTag)
-  const updateTagDefaultAmount = useTagStore((state) => state.updateTagDefaultAmount)
   const deleteTag = useTagStore((state) => state.deleteTag)
   const resetTags = useTagStore((state) => state.resetTags)
   const resetLogs = useHydrationStore((state) => state.resetLogs)
@@ -49,7 +48,7 @@ export function SettingsPage() {
   const handleAddTag = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmedName = tagName.trim()
-    
+
     if (trimmedName.length === 0) {
       toast.error("Please enter a tag name")
       return
@@ -91,29 +90,40 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="min-h-svh pb-8 pt-2">
+    <div className="min-h-svh pb-24 pt-2">
       <Navbar />
 
-      <div className="mx-auto mt-4 w-full max-w-7xl space-y-4 px-4 sm:mt-6 sm:space-y-6 sm:px-5 md:px-8">
-        {/* Header with GlassCard */}
-        <GlassCard className="space-y-4 p-5 sm:p-6 md:p-8">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-500">
-              Settings
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-              Configure Hydra
-            </h1>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-              Manage your hydration goals, NFC tags, and data preferences.
-            </p>
+      <div className="mx-auto w-full max-w-5xl space-y-4 px-3 sm:space-y-5 sm:px-5">
+        {/* Header */}
+        <div className="py-4 sm:py-6">
+          <div className="flex items-center gap-2 text-cyan-400 mb-2">
+            <Scan className="size-4" />
+            <p className="text-xs font-semibold uppercase tracking-[0.3em]">Settings</p>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Configure Hydra
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Manage your goals, NFC tags, and data.
+          </p>
+        </div>
+
+        {/* Goals */}
+        <GlassCard className="p-5 sm:p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+              <Gauge className="size-5" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Daily Goals</h2>
+              <p className="text-xs text-muted-foreground">Your hydration targets</p>
+            </div>
           </div>
 
-          {/* Settings Grid */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
-                Daily Goal (ml)
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Daily Goal
               </label>
               <div className="relative">
                 <input
@@ -128,18 +138,18 @@ export function SettingsPage() {
                       setDailyGoal(value)
                     }
                   }}
-                  className="h-11 w-full rounded-xl border border-white/70 bg-white/80 px-4 text-slate-900 outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-200/50 sm:h-12"
+                  className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-10 text-sm text-foreground outline-none transition focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                   ml
                 </span>
               </div>
-              <p className="text-xs text-slate-400">Recommended: 2000-3000ml</p>
+              <p className="text-[10px] text-muted-foreground">Recommended: 2000-3000ml</p>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
-                Default Glass (ml)
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Default Glass
               </label>
               <div className="relative">
                 <input
@@ -154,50 +164,47 @@ export function SettingsPage() {
                       setDefaultGlass(value)
                     }
                   }}
-                  className="h-11 w-full rounded-xl border border-white/70 bg-white/80 px-4 text-slate-900 outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-200/50 sm:h-12"
+                  className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-10 text-sm text-foreground outline-none transition focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                   ml
                 </span>
               </div>
-              <p className="text-xs text-slate-400">Used for new tags</p>
+              <p className="text-[10px] text-muted-foreground">Used for new tags</p>
             </div>
           </div>
         </GlassCard>
 
-        {/* Add Tag & Manage Tags with GlassCard */}
-        <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-          {/* Add Tag Form */}
-          <GlassCard className="space-y-5 p-5 sm:p-6">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-500">
-                Add NFC Tag
-              </p>
-              <h2 className="mt-1 text-2xl font-semibold text-slate-900">
-                Create a glass profile
-              </h2>
+        {/* Add Tag */}
+        <GlassCard className="p-5 sm:p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+              <PlusCircle className="size-5" />
             </div>
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Add NFC Tag</h2>
+              <p className="text-xs text-muted-foreground">Create a new glass profile</p>
+            </div>
+          </div>
 
-            <form onSubmit={handleAddTag} className="space-y-4">
+          <form onSubmit={handleAddTag} className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Tag Name
                 </label>
                 <input
                   value={tagName}
                   onChange={(event) => setTagName(event.target.value)}
                   placeholder="e.g., Desk Bottle"
-                  className="h-11 w-full rounded-xl border border-white/70 bg-white/80 px-4 text-slate-900 outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-200/50 sm:h-12"
+                  className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
                   maxLength={30}
                 />
-                <p className="text-xs text-slate-400">
-                  {tagName.length}/30 characters
-                </p>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">
-                  Default Amount (ml)
+              <div className="space-y-2 sm:w-28">
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Amount
                 </label>
                 <div className="relative">
                   <input
@@ -212,164 +219,127 @@ export function SettingsPage() {
                         setTagAmount(value)
                       }
                     }}
-                    className="h-11 w-full rounded-xl border border-white/70 bg-white/80 px-4 text-slate-900 outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-200/50 sm:h-12"
+                    className="h-11 w-full rounded-xl border border-border/60 bg-card/60 px-4 pr-8 text-sm text-foreground outline-none transition focus:border-cyan-500/30 focus:ring-2 focus:ring-cyan-500/10"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
                     ml
                   </span>
                 </div>
               </div>
-
-              <Button 
-                type="submit" 
-                className="rounded-full px-6"
-                disabled={!tagName.trim() || !validateAmount(tagAmount)}
-              >
-                <PlusCircle className="mr-2 size-4" />
-                Add Tag
-              </Button>
-            </form>
-          </GlassCard>
-
-          {/* Manage Tags */}
-          <GlassCard className="space-y-4 p-5 sm:p-6">
-            <div className="flex items-center justify-between gap-2">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-500">
-                  Manage Tags
-                </p>
-                <h2 className="mt-1 text-2xl font-semibold text-slate-900">
-                  Your NFC profiles
-                </h2>
-              </div>
-              <span className="rounded-full bg-white/70 px-3 py-1 text-sm text-slate-600">
-                {tags.length}
-              </span>
             </div>
 
-            {tags.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-white/70 bg-white/40 p-8 text-center">
-                <p className="text-sm text-slate-500">No tags created yet</p>
-                <p className="text-xs text-slate-400">Add your first tag above</p>
-              </div>
-            ) : (
-              <div className="space-y-3 max-h-100 overflow-y-auto pr-1">
-                {tags.map((tag) => (
-                  <GlassCard key={tag.id} tone="soft" className="p-4">
-                    <div className="space-y-4">
-                      <div className="grid gap-3 sm:grid-cols-[1fr_0.6fr]">
-                        <div className="space-y-1">
-                          <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">
-                            Name
-                          </label>
-                          <input
-                            defaultValue={tag.name}
-                            onBlur={(event) => {
-                              const value = event.target.value.trim()
-                              if (value && value !== tag.name) {
-                                renameTag(tag.id, value)
-                                toast.success(`Renamed to "${value}"`)
-                              }
-                            }}
-                            className="h-10 w-full rounded-lg border border-white/70 bg-white/80 px-3 text-sm text-slate-900 outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-200/50"
-                            maxLength={30}
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">
-                            Amount
-                          </label>
-                          <input
-                            type="number"
-                            min={50}
-                            max={1000}
-                            step={25}
-                            defaultValue={tag.defaultAmount}
-                            onBlur={(event) => {
-                              const value = Number(event.target.value)
-                              if (validateAmount(value) && value !== tag.defaultAmount) {
-                                updateTagDefaultAmount(tag.id, value)
-                                toast.success(`Updated amount to ${value}ml`)
-                              }
-                            }}
-                            className="h-10 w-full rounded-lg border border-white/70 bg-white/80 px-3 text-sm text-slate-900 outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-200/50"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-3 rounded-xl bg-white/65 p-4 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="truncate font-mono text-xs text-slate-500">
-                          {getTagUrl(tag.id)}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="rounded-full px-4"
-                            onClick={() => handleCopy(tag.id)}
-                          >
-                            {copySuccess === tag.id ? (
-                              <Check className="size-4 text-green-500" />
-                            ) : (
-                              <Copy className="size-4" />
-                            )}
-                            <span className="ml-1.5">
-                              {copySuccess === tag.id ? "Copied!" : "Copy URL"}
-                            </span>
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="rounded-full px-4"
-                            onClick={() => setDeleteTargetId(tag.id)}
-                          >
-                            <Trash2 className="size-4" />
-                            <span className="ml-1.5 hidden sm:inline">Delete</span>
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </GlassCard>
-                ))}
-              </div>
-            )}
-          </GlassCard>
-        </section>
-
-        {/* Reset Section with GlassCard */}
-        <GlassCard className="space-y-4 border-red-200/50 bg-red-50/30 p-5 sm:p-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.32em] text-red-500">
-                Danger Zone
-              </p>
-              <h2 className="mt-1 text-2xl font-semibold text-slate-900">
-                Reset all data
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                This will permanently delete all settings, tags, and hydration logs.
-              </p>
-            </div>
             <Button
-              variant="destructive"
-              className="rounded-full px-6"
-              onClick={() => setResetRequested(true)}
+              type="submit"
+              className="w-full sm:w-auto rounded-full bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25 border border-cyan-500/20 font-medium"
+              disabled={!tagName.trim() || !validateAmount(tagAmount)}
             >
-              <RefreshCw className="mr-2 size-4" />
-              Reset Everything
+              <PlusCircle className="mr-2 size-4" />
+              Add Tag
             </Button>
+          </form>
+        </GlassCard>
+
+        {/* Manage Tags */}
+        <GlassCard className="p-5 sm:p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+                <Droplets className="size-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-foreground">Your Tags</h2>
+                <p className="text-xs text-muted-foreground">{tags.length} registered</p>
+              </div>
+            </div>
           </div>
+
+          {tags.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border/60 p-10 text-center">
+              <p className="text-sm text-muted-foreground">No tags created yet</p>
+              <p className="text-xs text-muted-foreground/70 mt-1">Add your first tag above</p>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {tags.map((tag) => (
+                <div
+                  key={tag.id}
+                  className="group flex flex-col gap-3 rounded-2xl border border-border/40 bg-card/40 p-4 transition-colors hover:border-cyan-500/10 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-foreground truncate">
+                        {tag.name}
+                      </span>
+                      <span className="rounded-full bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium text-cyan-400">
+                        {tag.defaultAmount}ml
+                      </span>
+                    </div>
+                    <p className="mt-1 font-mono text-[10px] text-muted-foreground/70 break-all">
+                      {getTagUrl(tag.id)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 rounded-full text-cyan-400 hover:bg-cyan-500/10"
+                      onClick={() => handleCopy(tag.id)}
+                    >
+                      {copySuccess === tag.id ? (
+                        <Check className="size-3.5 text-green-400" />
+                      ) : (
+                        <Copy className="size-3.5" />
+                      )}
+                      <span className="ml-1.5 text-xs">{copySuccess === tag.id ? "Copied" : "Copy"}</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 rounded-full text-red-400 hover:bg-red-500/10"
+                      onClick={() => setDeleteTargetId(tag.id)}
+                    >
+                      <Trash2 className="size-3.5" />
+                      <span className="ml-1.5 text-xs hidden sm:inline">Delete</span>
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </GlassCard>
+
+        {/* Danger Zone */}
+        <GlassCard className="border-red-500/15 bg-red-500/4 p-5 sm:p-6">
+          <div className="flex items-start gap-3 mb-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-red-400">
+              <Shield className="size-5" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">Danger Zone</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Permanently delete all settings, tags, and hydration history.
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            className="rounded-full border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300 text-xs"
+            onClick={() => setResetRequested(true)}
+          >
+            <RefreshCw className="mr-1.5 size-3.5" />
+            Reset Everything
+          </Button>
         </GlassCard>
       </div>
 
-      {/* Confirmation Sheets */}
+      {/* Modals */}
       {deleteTarget && (
         <ConfirmationSheet
           title={`Delete "${deleteTarget.name}"?`}
           amountLabel={`${deleteTarget.defaultAmount} ml`}
-          description={`This will remove the "${deleteTarget.name}" tag and stop NFC taps from working.`}
-          confirmLabel="Delete Tag"
-          secondaryLabel="Keep Tag"
+          description="This will stop NFC taps from logging water for this container."
+          confirmLabel="Delete"
+          secondaryLabel="Keep"
           confirmVariant="destructive"
           onCancel={() => setDeleteTargetId(null)}
           onConfirm={() => {
@@ -383,15 +353,17 @@ export function SettingsPage() {
       {resetRequested && (
         <ConfirmationSheet
           title="Reset all data?"
-          amountLabel="⚠️ This action cannot be undone"
-          description="All your settings, tags, and hydration history will be permanently deleted."
-          confirmLabel="Yes, Reset All"
+          amountLabel="Cannot be undone"
+          description="All settings, tags, and logs will be permanently erased."
+          confirmLabel="Yes, Reset"
           secondaryLabel="Cancel"
           confirmVariant="destructive"
           onCancel={() => setResetRequested(false)}
           onConfirm={handleResetAll}
         />
       )}
+
+      <BottomTabNav />
     </div>
   )
 }

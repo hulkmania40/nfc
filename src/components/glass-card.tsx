@@ -11,53 +11,44 @@ type GlassCardProps = HTMLAttributes<HTMLDivElement> & {
 }
 
 const toneClasses = {
-  default: "bg-white/70 border-white/60 text-slate-900",
-  soft: "bg-white/55 border-white/50 text-slate-900",
-  accent: "bg-cyan-50/70 border-cyan-100/70 text-slate-900",
+  default: "glass",
+  soft: "glass",
+  accent: "bg-cyan-900/15 border-cyan-500/15",
 } satisfies Record<NonNullable<GlassCardProps["tone"]>, string>
 
 const paddingClasses = {
   none: "p-0",
   sm: "p-3 sm:p-4",
-  default: "p-4 sm:p-6 md:p-8",
-  lg: "p-6 sm:p-8 md:p-10",
+  default: "p-4 sm:p-5 md:p-6",
+  lg: "p-6 sm:p-8",
 } satisfies Record<NonNullable<GlassCardProps["padding"]>, string>
 
 export const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ 
-    className, 
-    tone = "default",
-    padding = "default",
-    border = true,
-    hoverable = false,
-    children,
-    ...props 
-  }, ref) => {
+  ({ tone = "default", padding = "default", border = true, hoverable, className, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={cn(
-          // Base styles
-          "relative overflow-hidden rounded-[2rem] backdrop-blur-xl shadow-sm",
-          "transition-all duration-200 ease-in-out",
-          // Tone styles
+          "relative overflow-hidden rounded-[1.5rem] transition-all duration-300",
           toneClasses[tone],
-          // Border
-          border && "border",
-          // Padding
           paddingClasses[padding],
-          // Hover effects
+          border && "border",
           hoverable && [
-            "hover:scale-[1.01] hover:shadow-md hover:backdrop-blur-xl",
-            "active:scale-[0.99] active:shadow-sm",
-            "cursor-pointer"
+            "hover:scale-[1.01] hover:shadow-lg",
+            "active:scale-[0.99]",
+            "cursor-pointer",
+            "hover:border-cyan-400/20",
           ],
-          // Focus styles for accessibility
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           className
         )}
         {...props}
       >
+        {/* Subtle inner glow at top */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-white/4 to-transparent"
+          aria-hidden="true"
+        />
         {children}
       </div>
     )
