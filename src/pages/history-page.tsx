@@ -3,6 +3,7 @@ import { format } from "date-fns"
 import { Droplets, Trash2 } from "lucide-react"
 
 import { GlassCard } from "@/components/glass-card"
+import { Navbar, BottomTabNav } from "@/components/navbar"
 import { cn } from "@/lib/utils"
 import { useHydrationStore } from "@/stores/hydration-store"
 import { useTagStore } from "@/stores/tag-store"
@@ -35,6 +36,8 @@ export function HistoryPage() {
 
   return (
     <div className="min-h-svh pb-24 pt-2">
+      <Navbar />
+
       <div className="mx-auto w-full max-w-5xl space-y-4 px-3 sm:space-y-5 sm:px-5">
         {/* Header */}
         <div className="flex items-center gap-2 text-cyan-400 py-4 sm:py-6">
@@ -130,6 +133,8 @@ export function HistoryPage() {
           </div>
         )}
       </div>
+
+      <BottomTabNav />
     </div>
   )
 }

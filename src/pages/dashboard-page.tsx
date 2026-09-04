@@ -119,14 +119,15 @@ export function DashboardPage() {
         {/* Hero Card - Greeting + Progress */}
         <GlassCard className="relative overflow-hidden p-5 sm:p-6 md:p-8">
           <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-cyan-500/4 blur-[80px]" aria-hidden="true" />
-          <div className="relative grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
-            <div className="space-y-4">
+          <div className="relative flex flex-col items-center gap-5 md:flex-row md:items-center md:justify-between">
+            {/* Left: text + buttons (desktop: left side) */}
+            <div className="w-full space-y-4 md:w-auto">
               <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/15 bg-cyan-500/8 px-3 py-1 text-[11px] font-medium text-cyan-400">
                 <Gauge className="size-3" />
                 {getGreeting()}
               </div>
 
-              <div>
+              <div className="text-center md:text-left">
                 <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
                   {motivationalMessage}
                 </h1>
@@ -136,7 +137,7 @@ export function DashboardPage() {
               </div>
 
               {/* Quick tap buttons */}
-              <div className="flex gap-2 overflow-x-auto scrollbar-hide sm:flex-wrap sm:overflow-visible">
+              <div className="flex flex-wrap justify-center gap-2 md:justify-start">
                 {tags.slice(0, 4).map((tag) => (
                   <Link key={tag.id} to={`/tap/${tag.id}`} className="shrink-0">
                     <Button
@@ -153,10 +154,10 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Progress ring + water glass */}
-            <div className="flex items-center justify-center gap-5 sm:gap-6">
+            {/* Right: progress ring + water glass (desktop: right side) */}
+            <div className="flex shrink-0 items-center justify-center gap-4 sm:gap-6">
               <div className="relative">
-                <ProgressRing value={hydrationLevel} size={140} strokeWidth={10} />
+                <ProgressRing value={hydrationLevel} size={120} strokeWidth={10} />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                   <AnimatedCounter
                     value={todayIntake}
