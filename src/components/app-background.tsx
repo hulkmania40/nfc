@@ -8,7 +8,12 @@ export function AppBackground() {
   const [isDark, setIsDark] = useState(() => checkDark())
 
   useEffect(() => {
-    const update = () => setIsDark(checkDark())
+    let timeout: ReturnType<typeof setTimeout>
+
+    const update = () => {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => setIsDark(checkDark()), 50)
+    }
 
     // MutationObserver catches classList changes on <html> from ThemeProvider
     const observer = new MutationObserver(update)
@@ -24,6 +29,7 @@ export function AppBackground() {
     return () => {
       observer.disconnect()
       window.removeEventListener("storage", handleStorage)
+      clearTimeout(timeout)
     }
   }, [])
 

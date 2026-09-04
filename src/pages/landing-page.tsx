@@ -3,6 +3,7 @@ import { ArrowRight, Droplets, WifiOff, Smartphone, Waves } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/glass-card"
+import { Navbar } from "@/components/navbar"
 
 const features = [
   {
@@ -44,6 +45,7 @@ function AnimatedDroplets() {
 export function LandingPage() {
   return (
     <div className="min-h-svh pb-28 pt-2">
+      <Navbar />
       <div className="relative overflow-hidden">
         {/* Background layers */}
         <div className="absolute inset-0 -z-20 bg-linear-to-b from-[#070b14] via-[#0a1220] to-[#070b14]" />
@@ -59,26 +61,6 @@ export function LandingPage() {
         <AnimatedDroplets />
 
         <div className="mx-auto w-full max-w-5xl px-4 pt-12 sm:px-5 sm:pt-16 md:pt-20 lg:pt-24">
-          {/* Nav */}
-          <nav className="flex items-center justify-between mb-16 sm:mb-24">
-            <div className="flex items-center gap-2.5">
-              <div className="relative flex size-10 items-center justify-center">
-                <div className="absolute inset-0 rounded-full bg-cyan-500/20 animate-pulse-glow" />
-                <Droplets className="size-5 text-cyan-400 relative z-10" />
-              </div>
-              <div>
-                <span className="text-sm font-bold tracking-[0.2em] text-foreground">HYDRA</span>
-                <p className="text-[10px] text-muted-foreground tracking-wide hidden sm:block">NFC hydration tracker</p>
-              </div>
-            </div>
-            <Link to="/dashboard">
-              <Button size="sm" className="rounded-full bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25 border border-cyan-500/20">
-                Launch App
-                <ArrowRight className="ml-1.5 size-3.5" />
-              </Button>
-            </Link>
-          </nav>
-
           {/* Hero */}
           <section className="text-center max-w-3xl mx-auto mb-20 sm:mb-28">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/15 bg-cyan-500/8 px-4 py-1.5 text-xs font-medium text-cyan-400 mb-8 animate-fade-in">
