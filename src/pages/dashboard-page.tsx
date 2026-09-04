@@ -136,13 +136,13 @@ export function DashboardPage() {
               </div>
 
               {/* Quick tap buttons */}
-              <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 sm:flex-wrap sm:mx-0 sm:px-0">
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide sm:flex-wrap sm:overflow-visible">
                 {tags.slice(0, 4).map((tag) => (
-                  <Link key={tag.id} to={`/tap/${tag.id}`}>
+                  <Link key={tag.id} to={`/tap/${tag.id}`} className="shrink-0">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="shrink-0 rounded-full border-cyan-500/15 bg-cyan-500/5 text-cyan-400 text-xs hover:bg-cyan-500/15 hover:text-cyan-300 hover:border-cyan-500/30 transition-all"
+                      className="rounded-full border-cyan-500/15 bg-cyan-500/5 text-cyan-400 text-xs hover:bg-cyan-500/15 hover:text-cyan-300 hover:border-cyan-500/30 transition-all"
                     >
                       <Droplets className="mr-1.5 size-3.5" />
                       {tag.name}
