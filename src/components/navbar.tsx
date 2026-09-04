@@ -2,7 +2,6 @@ import { Link, useLocation } from "react-router-dom"
 import { useTheme } from "@/components/theme-provider"
 import {
   Droplets,
-  Gauge,
   Moon,
   SunDim,
   Waves,
@@ -12,8 +11,7 @@ import { cn } from "@/lib/utils"
 import { useSettingsStore } from "@/stores/settings-store"
 
 const navItems = [
-  { label: "Today", to: "/dashboard", icon: Gauge },
-  { label: "Tap", to: "/tap/quick", icon: Droplets },
+  { label: "Tap", to: "/dashboard", icon: Droplets },
   { label: "History", to: "/history", icon: Waves },
   { label: "Settings", to: "/settings", icon: SunDim },
 ]
@@ -24,7 +22,7 @@ function NavLinks({ items }: { items: typeof navItems }) {
   return (
     <>
       {items.map((item) => {
-        const active = location.pathname === item.to || (item.to === "/tap/quick" && location.pathname.startsWith("/tap"))
+        const active = location.pathname === item.to
         const Icon = item.icon as LucideIcon
         return (
           <Link
@@ -94,7 +92,7 @@ export function BottomTabNav() {
     <nav className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-5xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
       <div className="glass-strong flex items-center justify-around rounded-[1.25rem] px-2 py-1.5">
         {navItems.map((item) => {
-          const active = location.pathname === item.to || (item.to === "/tap/quick" && location.pathname.startsWith("/tap"))
+          const active = location.pathname === item.to
           const Icon = item.icon as LucideIcon
           return (
             <Link

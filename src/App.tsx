@@ -7,6 +7,7 @@ import { DashboardPage } from "@/pages/dashboard-page"
 import { LandingPage } from "@/pages/landing-page"
 import { NotFoundPage } from "@/pages/not-found-page"
 import { SettingsPage } from "@/pages/settings-page"
+import { HistoryPage } from "@/pages/history-page"
 import { TapPage } from "@/pages/tap-page"
 
 export function App() {
@@ -19,8 +20,10 @@ export function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/tap" element={<Navigate to="/dashboard" replace />} />
           <Route path="/tap/:tagId" element={<TapPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/history" element={<HistoryPage />} />
           <Route path="/404" element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
         </Routes>
